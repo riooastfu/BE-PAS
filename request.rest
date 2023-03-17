@@ -1,0 +1,10 @@
+GET http://localhost:8080/users
+
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+    "namauser": "it.dev",
+    "password": "123"
+}
