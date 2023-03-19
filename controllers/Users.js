@@ -9,7 +9,7 @@ dotenv.config()
 export const getUsers = async (req, res) => {
     try {
         const users = await Users.findAll({
-            attributes: ['namauser', 'password']
+            attributes: ['namauser', 'password', 'karyawanid']
         });
         res.json(users);
     } catch (error) {
@@ -40,7 +40,8 @@ export const Login = async (req, res) => {
                     status: "Success",
                     msg: "Login sukses.",
                     token: token,
-                    namauser: user[0].namauser
+                    namauser: user[0].namauser,
+                    karyawanid: user[0].karyawanid
                 })
             });
 
