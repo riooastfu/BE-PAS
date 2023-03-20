@@ -1,217 +1,218 @@
 import { Sequelize } from "sequelize";
 import { db } from "../config/Database.js";
+import Departemen from "./DepartemenModel.js";
 
 const { DataTypes } = Sequelize;
 
-const DataUser = db.define('pers_datakaryawan',{
-    nik:{
+const DataUser = db.define('pers_datakaryawan', {
+    nik: {
         type: DataTypes.INTEGER(10).UNSIGNED.ZEROFILL,
         primaryKey: true
     },
-    nik_karyawan:{
+    nik_karyawan: {
         type: DataTypes.STRING(10)
     },
-    nik_kantor:{
+    nik_kantor: {
         type: DataTypes.STRING(20)
     },
-    no_urut:{
+    no_urut: {
         type: DataTypes.INTEGER(4)
     },
-    nama_karyawan:{
+    nama_karyawan: {
         type: DataTypes.STRING(100)
     },
     nama_panggilan: {
         type: DataTypes.STRING(7)
     },
-    tempat_lahir:{
+    tempat_lahir: {
         type: DataTypes.STRING(100)
     },
-    tanggal_lahir:{
+    tanggal_lahir: {
         type: DataTypes.DATEONLY
     },
-    shio:{
+    shio: {
         type: DataTypes.STRING(20)
     },
-    elemen:{
+    elemen: {
         type: DataTypes.STRING(20)
     },
-    sifat:{
+    sifat: {
         type: DataTypes.STRING(20)
     },
-    suku:{
+    suku: {
         type: DataTypes.STRING(12)
     },
-    alamat:{
+    alamat: {
         type: DataTypes.TEXT
     },
-    jenis_kelamin:{
-        type: DataTypes.ENUM('L','P')
+    jenis_kelamin: {
+        type: DataTypes.ENUM('L', 'P')
     },
-    agama:{
+    agama: {
         type: DataTypes.STRING(25)
     },
-    golongan_darah:{
+    golongan_darah: {
         type: DataTypes.STRING(3)
     },
-    berat_tinggi_badan:{
+    berat_tinggi_badan: {
         type: DataTypes.STRING(25)
     },
-    berat_badan:{
+    berat_badan: {
         type: DataTypes.INTEGER(3)
     },
-    status_pajak:{
+    status_pajak: {
         type: DataTypes.STRING(10)
     },
-    status_pernikahan:{
+    status_pernikahan: {
         type: DataTypes.STRING(15)
     },
-    no_telepon:{
+    no_telepon: {
         type: DataTypes.STRING(45)
     },
-    telpon_rumah:{
+    telpon_rumah: {
         type: DataTypes.STRING(40)
     },
-    emergency_contact:{
+    emergency_contact: {
         type: DataTypes.STRING(20)
     },
-    emergency_name:{
+    emergency_name: {
         type: DataTypes.STRING(50)
     },
-    email_pribadi:{
+    email_pribadi: {
         type: DataTypes.STRING(45)
     },
-    email_kantor:{
+    email_kantor: {
         type: DataTypes.STRING(45)
     },
-    tanggal_masuk:{
+    tanggal_masuk: {
         type: DataTypes.DATEONLY
     },
-    tanggal_keluar:{
+    tanggal_keluar: {
         type: DataTypes.DATEONLY
     },
-    id_finger:{
+    id_finger: {
         type: DataTypes.INTEGER(3)
     },
-    ktp_nomer:{
+    ktp_nomer: {
         type: DataTypes.STRING(20)
     },
-    ktp_nama:{
+    ktp_nama: {
         type: DataTypes.STRING(100)
     },
-    ktp_alamat:{
+    ktp_alamat: {
         type: DataTypes.TEXT
     },
-    jenis_sim:{
+    jenis_sim: {
         type: DataTypes.STRING(5)
     },
-    sim_nomer:{
+    sim_nomer: {
         type: DataTypes.STRING(20)
     },
-    updated_at:{
+    updated_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.NOW
     },
-    created_at:{
+    created_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.NOW
     },
-    npwp_nomer:{
+    npwp_nomer: {
         type: DataTypes.STRING(20)
     },
-    npwp_nama:{
+    npwp_nama: {
         type: DataTypes.STRING(45)
     },
-    npwp_alamat:{
+    npwp_alamat: {
         type: DataTypes.TEXT
     },
-    jms_nomer:{
+    jms_nomer: {
         type: DataTypes.STRING(20)
     },
-    jms_nama:{
+    jms_nama: {
         type: DataTypes.STRING(45)
     },
-    bpjs_kk:{
+    bpjs_kk: {
         type: DataTypes.STRING(20)
     },
-    bpjs_nomer:{
+    bpjs_nomer: {
         type: DataTypes.STRING(20)
     },
-    rek_nomer:{
+    rek_nomer: {
         type: DataTypes.STRING(20)
     },
-    rek_bank:{
+    rek_bank: {
         type: DataTypes.STRING(20)
     },
-    rek_an:{
+    rek_an: {
         type: DataTypes.STRING(45)
     },
-    poh:{
+    poh: {
         type: DataTypes.STRING(45)
     },
-    pangkat:{
+    pangkat: {
         type: DataTypes.STRING(10)
     },
-    jabatan:{
+    jabatan: {
         type: DataTypes.STRING(10)
     },
-    golongan:{
+    golongan: {
         type: DataTypes.STRING(10)
     },
-    tipe:{
+    tipe: {
         type: DataTypes.STRING(10)
     },
-    status:{
+    status: {
         type: DataTypes.STRING(10)
     },
-    departemen:{
+    departemen: {
+        type: DataTypes.STRING(10),
+    },
+    perusahaan: {
         type: DataTypes.STRING(10)
     },
-    perusahaan:{
+    lokasi: {
         type: DataTypes.STRING(10)
     },
-    lokasi:{
-        type: DataTypes.STRING(10)
-    },
-    asuransi:{
+    asuransi: {
         type: DataTypes.STRING(20)
     },
-    koordinat_rumah:{
+    koordinat_rumah: {
         type: DataTypes.STRING(100)
     },
-    tanda_lahir:{
+    tanda_lahir: {
         type: DataTypes.STRING(40)
     },
-    status_rumah:{
+    status_rumah: {
         type: DataTypes.STRING(40)
     },
-    emer_nama_panggilan:{
+    emer_nama_panggilan: {
         type: DataTypes.STRING(40)
     },
-    emergency_relation:{
+    emergency_relation: {
         type: DataTypes.STRING(40)
     },
-    emergency_alamat:{
+    emergency_alamat: {
         type: DataTypes.STRING(100)
     },
-    emer_alamat_kerja:{
+    emer_alamat_kerja: {
         type: DataTypes.STRING(100)
     },
-    job_deskripsi:{
+    job_deskripsi: {
         type: DataTypes.STRING(100)
     },
-    atasan_langsung:{
+    atasan_langsung: {
         type: DataTypes.INTEGER(10).UNSIGNED.ZEROFILL
     },
-    approve:{
+    approve: {
         type: DataTypes.TINYINT(1)
     },
-    control_1:{
-        type: DataTypes.ENUM('yes','no',",")
+    control_1: {
+        type: DataTypes.ENUM('yes', 'no', ",")
     },
-    control_2:{
-        type: DataTypes.ENUM('yes','no',",")
+    control_2: {
+        type: DataTypes.ENUM('yes', 'no', ",")
     },
-    flag_pt:{
+    flag_pt: {
         type: DataTypes.INTEGER(11)
     },
 }, {
@@ -219,5 +220,7 @@ const DataUser = db.define('pers_datakaryawan',{
     createdAt: false,
     updatedAt: false
 });
+
+DataUser.belongsTo(Departemen, { foreignKey: 'departemen', targetKey: 'kode' });
 
 export default DataUser;

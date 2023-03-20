@@ -5,6 +5,12 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-    "namauser": "it.dev",
+    "namauser": "shella.vidya",
     "password": "123"
 }
+
+###
+GET http://localhost:8080/dtkaryawan/202
+
+###
+GET http://localhost:8080/departemen/D020
