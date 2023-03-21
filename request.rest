@@ -14,3 +14,8 @@ GET http://localhost:8080/dtkaryawan/202
 
 ###
 GET http://localhost:8080/departemen/D020
+
+###
+GET http://localhost:8080/dataKaryawan
+###
+GET http://localhost:8080/dataKaryawan/1

@@ -221,4 +221,6 @@ const DataUser = db.define('pers_datakaryawan', {
     updatedAt: false
 });
 
+DataUser.belongsTo(Departemen, { foreignKey: 'departemen', targetKey: 'kode' });
+
 export default DataUser;
