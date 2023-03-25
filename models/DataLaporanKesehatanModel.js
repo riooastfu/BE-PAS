@@ -24,7 +24,7 @@ const DtLapKes = db.define('pers_datalaporan_kesehatan', {
     jam_pulang: {
         type: DataTypes.TIME
     },
-    jam_masuk: {
+    status_kerja: {
         type: DataTypes.STRING(40)
     },
     kesehatan_tanggal: {
@@ -33,7 +33,7 @@ const DtLapKes = db.define('pers_datalaporan_kesehatan', {
     kesehatan_nama: {
         type: DataTypes.STRING(40)
     },
-    kesehatan_departemen: {
+    kesehatan_dept: {
         type: DataTypes.STRING(40)
     },
     kesehatan_jabatan: {
