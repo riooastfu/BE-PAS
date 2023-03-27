@@ -24,4 +24,4 @@ GET http://localhost:8080/dataKaryawan/202
 GET http://localhost:8080/lapHarian/202
 
 ###
-GET http://localhost:8080/lapHarianById/0000000202_2023-03-24
+GET http://localhost:8080/lapHarianById/0000000202_2023-03-27

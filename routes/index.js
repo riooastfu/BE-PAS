@@ -5,6 +5,7 @@ import { getUsers, Login } from "../controllers/Users.js";
 import { getDataKaryawan, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
+import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut } from "../controllers/DataLaporanHarianController.js";
 
 const router = express.Router();
 
@@ -25,5 +26,10 @@ router.get('/lapHarian/:nik', getDtLapKesByNik);
 router.get('/lapHarianById/:id_laporan', getDtLapKesById);
 router.delete('/delLapHarian/:id_laporan', deleteDtLapKesByTgl);
 router.post('/InsertLapHarian/:nik', createLapKes);
+
+//DtLapHar
+router.get('/laporanHarian/:id_laporan', getDtLapHarianById);
+router.post('/insertLaporanHarian/:id_laporan', createDtLapHarian);
+router.delete('/delLaporanHarian/:no_urut', deleteDtLapHarByNoUrut);
 
 export default router;
