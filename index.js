@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 
 //import config
-import { db } from "./config/Database.js";
+import { db, db_finpro } from "./config/Database.js";
 
 //import models
 // import Users from "./models/UserModel.js";
@@ -14,6 +14,7 @@ const app = express();
 
 try {
     await db.authenticate();
+    await db_finpro.authenticate();
     console.log("Database Connected...!");
     // await Users.sync();
 } catch (error) {

@@ -5,7 +5,9 @@ import { getUsers, Login } from "../controllers/Users.js";
 import { getDataKaryawan, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
-import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut } from "../controllers/DataLaporanHarianController.js";
+import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById } from "../controllers/DataLaporanHarianController.js";
+import { getDataAbsen } from "../controllers/AbsensiController.js";
+
 
 const router = express.Router();
 
@@ -31,5 +33,9 @@ router.post('/InsertLapHarian/:nik', createLapKes);
 router.get('/laporanHarian/:id_laporan', getDtLapHarianById);
 router.post('/insertLaporanHarian/:id_laporan', createDtLapHarian);
 router.delete('/delLaporanHarian/:no_urut', deleteDtLapHarByNoUrut);
+router.delete('/delLaporanHarianById/:id_laporan', deleteDtLapHarById);
+
+//Absensi
+router.get('/absensi/:pegawai_nip', getDataAbsen);
 
 export default router;
