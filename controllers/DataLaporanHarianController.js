@@ -5,7 +5,7 @@ import DtLapHarian from "../models/DataLaporanHarianModel.js";
 export const getDtLapHarianById = async (req, res) => {
     try {
         const dtLapHarian = await DtLapHarian.sequelize.query(
-            "SELECT * FROM pers_datalaporan_harian WHERE id_laporan = :id_laporan",
+            "SELECT * FROM pers_datalaporan_harian WHERE id_laporan = :id_laporan ORDER BY no_urut ASC LIMIT 0,4",
             {
                 replacements: { id_laporan: req.params.id_laporan },
                 type: QueryTypes.SELECT
