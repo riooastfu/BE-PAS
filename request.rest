@@ -27,7 +27,7 @@ GET http://localhost:8080/lapHarian/202
 GET http://localhost:8080/lapHarianById/0000000202_2023-03-27
 
 ###
-GET http://localhost:8080/laporanHarian/0000000202_2023-03-28
+GET http://localhost:8080/laporanHarian/0000000202_2023-03-31
 
 ###
 DELETE  http://localhost:8080/delLaporanHarianById/0000000202_2023-03-27

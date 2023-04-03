@@ -33,9 +33,9 @@ export const createDtLapHarian = async (req, res) => {
 
 export const deleteDtLapHarByNoUrut = async (req, res) => {
     try {
-        const dtLapHarian = await DtLapHarian.sequelize.query("DELETE FROM pers_datalaporan_harian WHERE no_urut = :no_urut",
+        const dtLapHarian = await DtLapHarian.sequelize.query("DELETE FROM pers_datalaporan_harian WHERE no_urut = :no_urut AND id_laporan = :id_laporan",
             {
-                replacements: { no_urut: req.params.no_urut },
+                replacements: { no_urut: req.params.no_urut, id_laporan: req.params.id_laporan },
                 type: QueryTypes.DELETE
             });
         res.json("Berhasil Delete");

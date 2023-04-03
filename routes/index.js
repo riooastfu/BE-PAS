@@ -6,7 +6,7 @@ import { getDataKaryawan, getDataKaryawanByNik } from "../controllers/DataKaryaw
 import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
 import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById } from "../controllers/DataLaporanHarianController.js";
-import { getDataAbsen } from "../controllers/AbsensiController.js";
+import { getDataAbsen, getDataAbsenByNip } from "../controllers/AbsensiController.js";
 
 
 const router = express.Router();
@@ -32,10 +32,11 @@ router.post('/InsertLapHarian/:nik', createLapKes);
 //DtLapHar
 router.get('/laporanHarian/:id_laporan', getDtLapHarianById);
 router.post('/insertLaporanHarian/:id_laporan', createDtLapHarian);
-router.delete('/delLaporanHarian/:no_urut', deleteDtLapHarByNoUrut);
+router.delete('/delLaporanHarian/:no_urut&:id_laporan', deleteDtLapHarByNoUrut);
 router.delete('/delLaporanHarianById/:id_laporan', deleteDtLapHarById);
 
 //Absensi
 router.get('/absensi/:pegawai_nip', getDataAbsen);
+router.get('/absensiByNip/:pegawai_nip', getDataAbsenByNip);
 
 export default router;
