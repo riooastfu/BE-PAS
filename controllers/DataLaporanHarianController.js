@@ -17,6 +17,21 @@ export const getDtLapHarianById = async (req, res) => {
     }
 }
 
+export const getNoUrut = async (req, res) => {
+    try {
+        const dtLapHarian = await DtLapHarian.sequelize.query(
+            "SELECT no_urut FROM `pers_datalaporan_harian` WHERE id_laporan = :id_laporan ORDER BY no_urut DESC LIMIT 0,1",
+            {
+                replacements: { id_laporan: req.params.id_laporan },
+                type: QueryTypes.SELECT
+            });
+        res.json(dtLapHarian);
+
+    } catch (error) {
+        res.json(error);
+    }
+}
+
 export const createDtLapHarian = async (req, res) => {
     try {
         const { nik, no_urut, id_laporan, nik_kantor, nama_karyawan, jabatan_karyawan, dept_karyawan, uraian_kegiatan, target_harian, pt, kategori, lokasi_kerja, atasan_langsung } = req.body
@@ -27,9 +42,35 @@ export const createDtLapHarian = async (req, res) => {
         });
         res.status(201).json({ msg: "Data Ditambah!" })
     } catch (error) {
-        res.json("Error: ", error)
+        res.json(error)
     }
 }
+
+// export const createDtLapHarian = async (req, res) => {
+//     try {
+//         const createLapHarian = await DtLapHarian.sequelize.query("INSERT INTO pers_datalaporan_harian (nik, no_urut, id_laporan, nik_kantor, nama_karyawan, jabatan_karyawan, dept_karyawan, uraian_kegiatan, target_harian, pt, kategori, lokasi_kerja, atasan_langsung) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+//         {
+//             type: QueryTypes.INSERT,
+//             replacements: {
+//                 nik: req.params.nik,
+//                 no_urut, 
+//                 id_laporan, 
+//                 nik_kantor, 
+//                 nama_karyawan, 
+//                 jabatan_karyawan, 
+//                 dept_karyawan, 
+//                 uraian_kegiatan, 
+//                 target_harian, 
+//                 pt, 
+//                 kategori, 
+//                 lokasi_kerja, 
+//                 atasan_langsung
+//             }
+//         })
+//     } catch (error) {
+//         res.json(error)
+//     }
+// }
 
 export const deleteDtLapHarByNoUrut = async (req, res) => {
     try {

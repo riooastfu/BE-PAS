@@ -53,8 +53,8 @@ export const createLapKes = async (req, res) => {
                 nik: req.params.nik
             }
         });
-        res.status(201).json({ msg: "Data Ditambah!" })
+        res.json({ msg: "Data Ditambah!" })
     } catch (error) {
-        res.json("Error: ", error)
+        res.json(error)
     }
 }

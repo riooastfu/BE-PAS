@@ -5,7 +5,7 @@ import { getUsers, Login } from "../controllers/Users.js";
 import { getDataKaryawan, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
-import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById } from "../controllers/DataLaporanHarianController.js";
+import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById, getNoUrut } from "../controllers/DataLaporanHarianController.js";
 import { getDataAbsen, getDataAbsenByNip } from "../controllers/AbsensiController.js";
 
 
@@ -34,6 +34,7 @@ router.get('/laporanHarian/:id_laporan', getDtLapHarianById);
 router.post('/insertLaporanHarian/:id_laporan', createDtLapHarian);
 router.delete('/delLaporanHarian/:no_urut&:id_laporan', deleteDtLapHarByNoUrut);
 router.delete('/delLaporanHarianById/:id_laporan', deleteDtLapHarById);
+router.get('/noUrut/:id_laporan', getNoUrut);
 
 //Absensi
 router.get('/absensi/:pegawai_nip', getDataAbsen);
