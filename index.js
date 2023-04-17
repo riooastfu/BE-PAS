@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors";
+import cors from 'cors';
 
 //import config
 import { db, db_finpro } from "./config/Database.js";
@@ -12,13 +12,15 @@ import router from "./routes/index.js";
 
 const app = express();
 
-try {
-    await db.authenticate();
-    await db_finpro.authenticate();
-    console.log("Database Connected...!");
-    // await Users.sync();
-} catch (error) {
-    console.log("Error: ", error);
+async () => {
+    try {
+        await db.authenticate();
+        await db_finpro.authenticate();
+        console.log("Database Connected...!");
+        // await Users.sync();
+    } catch (error) {
+        console.log("Error: ", error);
+    }
 }
 
 app.use(cors());
