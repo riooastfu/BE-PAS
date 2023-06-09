@@ -7,7 +7,8 @@ import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
 import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById, getNoUrut } from "../controllers/DataLaporanHarianController.js";
 import { getDataAbsen, getDataAbsenByNip } from "../controllers/AbsensiController.js";
-
+import { getCutiByNik } from "../controllers/CutiKaryawanController.js";
+import { getCutiDtByIdCuti } from "../controllers/CutiKaryawanDtController.js";
 
 const router = express.Router();
 
@@ -39,5 +40,11 @@ router.get('/noUrut/:id_laporan', getNoUrut);
 //Absensi
 router.get('/absensi/:pegawai_nip', getDataAbsen);
 router.get('/absensiByNip/:pegawai_nip', getDataAbsenByNip);
+
+//Data Cuti
+router.get('/getCuti/:nik', getCutiByNik);
+
+//Data Cuti Detail
+router.get('/getCutiDt/:id_cuti', getCutiDtByIdCuti);
 
 export default router;
