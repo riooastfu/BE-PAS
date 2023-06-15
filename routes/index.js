@@ -2,13 +2,14 @@ import express from "express";
 
 import { getUsers, Login } from "../controllers/Users.js";
 // import { getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
-import { getDataKaryawan, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
+import { getDataKaryawan, getDataKaryawanByDepart, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
 import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById, getNoUrut } from "../controllers/DataLaporanHarianController.js";
 import { getDataAbsen, getDataAbsenByNip } from "../controllers/AbsensiController.js";
-import { getCutiByNik } from "../controllers/CutiKaryawanController.js";
+import { getCutiByNik, getCutiByIdCuti } from "../controllers/CutiKaryawanController.js";
 import { getCutiDtByIdCuti } from "../controllers/CutiKaryawanDtController.js";
+import { getDataCYDHol } from "../controllers/CYDHolController.js";
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post('/login', Login);
 // router.get('/dtkaryawan/:nik', getDataKaryawanByNik);
 router.get('/dataKaryawan', getDataKaryawan);
 router.get('/dataKaryawan/:nik', getDataKaryawanByNik);
+router.get('/dataKaryawanByDepart/:depart&:pt', getDataKaryawanByDepart);
 
 //Departemen
 router.get('/departemen/:kode', getData);
@@ -43,8 +45,12 @@ router.get('/absensiByNip/:pegawai_nip', getDataAbsenByNip);
 
 //Data Cuti
 router.get('/getCuti/:nik', getCutiByNik);
+router.get('/getCutiById/:id_cuti', getCutiByIdCuti);
 
 //Data Cuti Detail
 router.get('/getCutiDt/:id_cuti', getCutiDtByIdCuti);
+
+//Data CYDHOL
+router.get('/getDataCYDHOL', getDataCYDHol);
 
 export default router;

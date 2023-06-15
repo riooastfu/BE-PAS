@@ -32,3 +32,18 @@ export const getDataKaryawanByNik = async (req, res) => {
         res.json(error);
     }
 }
+
+export const getDataKaryawanByDepart = async (req, res) => {
+    try {
+        const dataKaryawan = await DataUser.sequelize.query(
+            "SELECT nama_karyawan as label, nik as value FROM `pers_datakaryawan` WHERE departemen = :depart AND tanggal_keluar < '1909-01-01' AND perusahaan = :pt;",
+            {
+                replacements: { depart: req.params.depart, pt: req.params.pt },
+                type: QueryTypes.SELECT
+            });
+        res.json(dataKaryawan);
+
+    } catch (error) {
+        res.json(error);
+    }
+}
