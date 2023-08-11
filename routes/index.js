@@ -2,13 +2,13 @@ import express from "express";
 
 import { getUsers, Login } from "../controllers/Users.js";
 // import { getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
-import { getDataKaryawan, getDataKaryawanByDepart, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
+import { getDataAtasan, getDataKaryawan, getDataKaryawanByDepart, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getData } from "../controllers/DepartemenController.js";
 import { deleteDtLapKesByTgl, getDtLapKesById, getDtLapKesByNik, createLapKes } from "../controllers/DataLaporanKesehatanController.js";
 import { getDtLapHarianById, createDtLapHarian, deleteDtLapHarByNoUrut, deleteDtLapHarById, getNoUrut } from "../controllers/DataLaporanHarianController.js";
 import { getDataAbsen, getDataAbsenByNip } from "../controllers/AbsensiController.js";
 import { getCutiByNik, getCutiByIdCuti } from "../controllers/CutiKaryawanController.js";
-import { getCutiDtByIdCuti } from "../controllers/CutiKaryawanDtController.js";
+import { createCutiDt, getCutiDtByIdCuti, getCutiDtLikeIdCuti } from "../controllers/CutiKaryawanDtController.js";
 import { getDataCYDHol } from "../controllers/CYDHolController.js";
 
 const router = express.Router();
@@ -21,7 +21,8 @@ router.post('/login', Login);
 // router.get('/dtkaryawan/:nik', getDataKaryawanByNik);
 router.get('/dataKaryawan', getDataKaryawan);
 router.get('/dataKaryawan/:nik', getDataKaryawanByNik);
-router.get('/dataKaryawanByDepart/:depart&:pt', getDataKaryawanByDepart);
+router.get('/dataKaryawanByDepart/:nik&:depart&:pt', getDataKaryawanByDepart);
+router.get('/dataAtasan/:nik&:depart&:parent&:pt', getDataAtasan);
 
 //Departemen
 router.get('/departemen/:kode', getData);
@@ -49,6 +50,8 @@ router.get('/getCutiById/:id_cuti', getCutiByIdCuti);
 
 //Data Cuti Detail
 router.get('/getCutiDt/:id_cuti', getCutiDtByIdCuti);
+router.get('/getCutiDtLike/:nik', getCutiDtLikeIdCuti);
+router.post('/insertCutiDt', createCutiDt);
 
 //Data CYDHOL
 router.get('/getDataCYDHOL', getDataCYDHol);

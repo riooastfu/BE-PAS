@@ -43,7 +43,7 @@ const DataCutiKaryawandt = db.define('pers_cutikaryawandt', {
     atasan: {
         type: DataTypes.INTEGER(10).UNSIGNED.ZEROFILL,
     },
-    no_telp: {
+    no_telepon: {
         type: DataTypes.STRING(20)
     },
     updated_at: {

@@ -6,7 +6,7 @@ export const getData = async (req, res) => {
             where: {
                 kode: req.params.kode
             },
-            attributes: ['kode', 'desc']
+            attributes: ['kode', 'desc', 'parent']
         });
         res.json(dataDepartemen)
     } catch (error) {
