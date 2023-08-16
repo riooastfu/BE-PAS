@@ -2,16 +2,30 @@ import { QueryTypes } from "sequelize";
 
 import DataUser from "../models/DataKaryawanModel.js";
 
+// export const getDataKaryawan = async (req, res) => {
+//     try {
+//         const dataKaryawan = await DataUser.sequelize.query("SELECT * FROM pers_datakaryawan", {
+//             type: QueryTypes.SELECT
+//         });
+
+//         // let response = {
+//         //     record: dataKaryawan
+//         // }
+//         res.json(dataKaryawan);
+
+//     } catch (error) {
+//         res.json(error);
+//     }
+// }
+
 export const getDataKaryawan = async (req, res) => {
     try {
-        const dataKaryawan = await DataUser.sequelize.query("SELECT * FROM pers_datakaryawan", {
-            type: QueryTypes.SELECT
-        });
-
-        let response = {
-            record: dataKaryawan
-        }
-        res.json(response);
+        const dataKaryawan = await DataUser.sequelize.query(
+            "SELECT CAST(nik AS CHAR(15)) AS nik, nama_karyawan FROM pers_datakaryawan",
+            {
+                type: QueryTypes.SELECT
+            });
+        res.json(dataKaryawan);
 
     } catch (error) {
         res.json(error);

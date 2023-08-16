@@ -22,6 +22,15 @@ async () => {
         console.log("Error: ", error);
     }
 }
+// try {
+//     await db.authenticate();
+//     await db_finpro.authenticate();
+//     console.log('Database Connected...!');
+
+//     // await Users.sync(); //Mengecek apakah table ada, jika tidak sequelize otomatis mengcreate table
+// } catch (error) {
+//     console.error("Error: ", error);
+// }
 
 app.use(cors());
 app.use(express.json());
