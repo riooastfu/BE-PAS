@@ -6,6 +6,18 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config()
 
+export const getStatus = async (req, res) => {
+    try {
+        const status = [{
+            "status": "Database Connected.",
+            "msg": "Successfully hit API!!!"
+        }]
+        res.json(status);
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
 export const getUsers = async (req, res) => {
     try {
         const users = await Users.findAll({

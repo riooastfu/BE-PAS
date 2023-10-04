@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getUsers, Login } from "../controllers/Users.js";
+import { getStatus, getUsers, Login } from "../controllers/Users.js";
 // import { getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getDataAtasan, getDataKaryawan, getDataKaryawanByDepart, getDataKaryawanByNik } from "../controllers/DataKaryawanController.js";
 import { getData } from "../controllers/DepartemenController.js";
@@ -11,11 +11,19 @@ import { getCutiByNik, getCutiByIdCuti } from "../controllers/CutiKaryawanContro
 import { approveAtasan, createCutiDt, getCutiDtByIdCuti, getCutiDtLikeAtasan, getCutiDtLikeIdCuti, rejectAtasan } from "../controllers/CutiKaryawanDtController.js";
 import { getDataCYDHol } from "../controllers/CYDHolController.js";
 
+import { multerImageUpload } from "../config/ImageUploader.js";
+import { absenCheckOut, uploadImage } from "../controllers/AbsensiCamController.js";
+
 const router = express.Router();
 
 //Users
 router.get('/users', getUsers);
 router.post('/login', Login);
+router.get('/status', getStatus);
+
+//absensi karyawan
+router.post('/uploadabsen', multerImageUpload.single("file_upload"), uploadImage)
+router.post('/absen/checkout', absenCheckOut);
 
 //DataKaryawan
 // router.get('/dtkaryawan/:nik', getDataKaryawanByNik);
