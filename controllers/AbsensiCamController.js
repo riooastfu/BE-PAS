@@ -56,7 +56,11 @@ export const absenCheckOut = async (req, res) => {
             {
                 type: QueryTypes.UPDATE
             });
-        res.status(201).json({ msg: "Absen Updated!" })
+        res.status(201).json(
+            {
+                msg: "Berhasil Check Out Absen!"
+            }
+        )
     } catch (error) {
         res.json(error.message);
     }
