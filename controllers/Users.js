@@ -88,6 +88,7 @@ export const Login = async (req, res) => {
                     token: token,
                     namauser: user[0][0].namauser,
                     karyawanid: user[0][0].karyawanid,
+                    nik_kantor: user[0][0].nik_kantor,
                     nama_karyawan: user[0][0].nama_karyawan,
                     jabatan: user[0][0].jabatan,
                     departemen: user[0][0].departemen,

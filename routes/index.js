@@ -12,7 +12,7 @@ import { approveAtasan, createCutiDt, getCutiDtByIdCuti, getCutiDtLikeAtasan, ge
 import { getDataCYDHol } from "../controllers/CYDHolController.js";
 
 import { multerImageUpload } from "../config/ImageUploader.js";
-import { absenCheckOut, uploadImage } from "../controllers/AbsensiCamController.js";
+import { absenCheckIn, absenCheckOut, getPinKaryawan } from "../controllers/AbsensiCamController.js";
 
 const router = express.Router();
 
@@ -22,8 +22,10 @@ router.post('/login', Login);
 router.get('/status', getStatus);
 
 //absensi karyawan
-router.post('/uploadabsen', multerImageUpload.single("file_upload"), uploadImage)
+// router.post('/uploadabsen', multerImageUpload.single("file_upload"), uploadImage)
+router.post('/absen/checkin', multerImageUpload.single("image"), absenCheckIn)
 router.post('/absen/checkout', absenCheckOut);
+router.post('/absen/getpin', getPinKaryawan);
 
 //DataKaryawan
 // router.get('/dtkaryawan/:nik', getDataKaryawanByNik);
