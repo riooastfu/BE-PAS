@@ -5,43 +5,6 @@ import DataAbsenCam from "../models/AbsenCamModel.js";
 import DataAbsen from "../models/AbsensiModel.js";
 import DataAbsenDum from "../models/AbsensiDumModel.js";
 
-// export const uploadImage = async (req, res) => {
-//     try {
-
-//         const errors = validationResult(req.body);
-
-//         if (!errors.isEmpty()) {
-//             return res.status(422).json({ errors: errors.array() });
-//         }
-
-//         //checking if body have image to save
-//         if (!req.file) {
-//             return res.status(422).json({
-//                 status: res.status,
-//                 msg: "Image must be upload",
-//             });
-//         }
-//         //image url
-//         const image = req.protocol + "://" + req.get("host") + "/uploads" + "/" + req.file.filename;
-
-//         const { id_absen, nik } = req.body
-
-//         const INSERT = `INSERT INTO pers_absensikaryawan (id_absen, nik, checkin, file_upload) VALUES ('${id_absen}','${nik}',NOW(),'${image}')`;
-//         const dtAbsenCam = await DataAbsenCam.sequelize.query(INSERT,
-//             {
-//                 type: QueryTypes.INSERT
-//             });
-//         res.status(201).json({ msg: "Image Uploaded!" })
-//     } catch (error) {
-//         res.json(
-//             {
-//                 error: error,
-//                 status: res.status
-//             }
-//         );
-//     }
-// }
-
 export const absenCheckIn = async (req, res) => {
     try {
 
