@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Public directory (often contains build artifacts or user uploads)
+public/
+
+# Certificates directory
+cert/
+
+# Other common ignores (optional, but good practice)
+npm-debug.log*
+yarn-error.log*
+.DS_Store
