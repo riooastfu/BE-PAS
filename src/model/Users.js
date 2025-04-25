@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import { db } from "../config/database.js";
 import PersDataKaryawan from "./PersDataKaryawan.js";
+import AuthRoleHt from "./AuthRoleHt.js";
 
 const { DataTypes } = Sequelize;
 
@@ -91,6 +92,8 @@ const Users = db.define('user', {
 })
 
 PersDataKaryawan.hasOne(Users);
+AuthRoleHt.hasOne(Users);
 Users.belongsTo(PersDataKaryawan, { foreignKey: 'karyawanid' })
+Users.belongsTo(AuthRoleHt, { foreignKey: 'id_role' })
 
 export default Users;

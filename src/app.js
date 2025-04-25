@@ -40,7 +40,11 @@ app.all('*', (req, res, next) => {
 // Middleware ini HARUS diletakkan paling akhir
 app.use(globalErrorHandler);
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:8080'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    // credentials: true, // Tetap aktif jika website menggunakan cookie
+}));
 app.use(express.static(path.join(__dirname, "public")));
 
 export default app // Ekspor app untuk digunakan di server.js

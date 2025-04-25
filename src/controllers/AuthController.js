@@ -8,12 +8,42 @@ import PersLokasiModel from "../model/PersLokasi.js";
 import PersPtModel from "../model/PersPt.js";
 import Pegawai from '../model/Pegawai.js';
 import { AppError } from '../utils/errorHandler.js';
+import RefreshToken from '../model/RefreshToken.js';
+import { Op } from 'sequelize';
+import AuthRoleHt from '../model/AuthRoleHt.js';
 
+// Fungsi untuk membuat access token
+const generateAccessToken = (payload) => {
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
+
+// Fungsi untuk membuat refresh token
+const generateRefreshToken = (payload) => {
+    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '14d' });
+};
+
+// Simpan refresh token ke database
+const saveRefreshToken = async (token, karyawanid) => {
+    // Atur masa berlaku token untuk dua minggu dari sekarang
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 14);
+
+    // Hapus token lama untuk user yang sama untuk mencegah penumpukan token
+    await RefreshToken.destroy({ where: { karyawanid: karyawanid } });
+
+    // Simpan token baru
+    return await RefreshToken.create({
+        token,
+        karyawanid: karyawanid,
+        expires_at: expiresAt
+    });
+};
 
 export const Login = async (req, res, next) => {
     const JWT_SECRETTOKEN = process.env.JWT_SECRET;
-    if (!JWT_SECRETTOKEN) {
-        // Error jika secret key tidak ada, penting untuk JWT
+    const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+
+    if (!JWT_SECRETTOKEN || !REFRESH_TOKEN_SECRET) {
         return next(new AppError('Konfigurasi server tidak lengkap (JWT Secret missing).', 500, 'JWT_SECRET_MISSING'));
     }
 
@@ -22,45 +52,39 @@ export const Login = async (req, res, next) => {
         if (!namauser || !password) {
             return next(new AppError('Nama user dan password dibutuhkan.', 400, 'MISSING_CREDENTIALS'));
         }
-        // TODO: Pertimbangkan validasi format/panjang jika perlu
 
         const foundUser = await Users.findOne({
             where: { namauser: namauser },
-            // Gunakan 'include' untuk mengambil data terkait (pengganti JOIN)
-            // Anda perlu mendefinisikan asosiasi (relations) antar model di Sequelize agar 'include' berfungsi
             include: [
                 {
-                    model: PersDataKaryawanModel, // Asumsi 'Users' berelasi dengan 'PersDataKaryawan' via 'karyawanid'
-                    attributes: [ // Pilih kolom yang dibutuhkan dari PersDataKaryawan
+                    model: PersDataKaryawanModel,
+                    attributes: [
                         'nik_kantor', 'nama_karyawan', 'status', 'golongan'
-                        // 'jabatan', 'departemen', 'lokasi', 'perusahaan' // Ini adalah foreign key, kita ambil data terkait di bawah
                     ],
-                    include: [ // Include data dari tabel yang berelasi dengan PersDataKaryawan
-                        { model: PersJabatanModel, attributes: ['desc'] },
-                        { model: PersDepartemenModel, attributes: ['desc'] },
-                        { model: PersPtModel, attributes: ['nama_pt'] },
-                        { model: PersLokasiModel, attributes: ['lokasi'] }
+                    include: [
+                        { model: PersJabatanModel, attributes: ['kode'] },
+                        { model: PersDepartemenModel, attributes: ['kode'] },
+                        { model: PersPtModel, attributes: ['kode'] },
+                        { model: PersLokasiModel, attributes: ['kode'] },
+                    ]
+                },
+                {
+                    model: AuthRoleHt,
+                    attributes: [
+                        'id_role', 'nama_role'
                     ]
                 }
             ],
             attributes: ['namauser', 'password', 'karyawanid']
         });
 
-        // --- Cek User & Password ---
-        // 1. Cek apakah user ditemukan
-        // 2. **PENTING**: Bandingkan password daro foundUser dengan password hasil crypt
-
         const hashPassword = crypto.createHash('md5').update(password).digest('hex');
         const isPasswordCorrect = foundUser ? hashPassword == foundUser.password : false;
 
         if (!foundUser || !isPasswordCorrect) {
-            // **PENTING**: Jangan beri tahu apakah username atau password yang salah.
-            // Berikan pesan error generik untuk mencegah user enumeration attack.
-            // Gunakan status 401 Unauthorized.
             return next(new AppError('Username atau password salah.', 401, 'INVALID_CREDENTIALS'));
         }
 
-        // --- Ambil PIN Absen karyawan dari db fingerspot [fin pro] ---
         const userPin = await Pegawai.findOne({
             where: { pegawai_nip: foundUser.pers_datakaryawan?.nik_kantor },
             attributes: ['pegawai_pin']
@@ -70,51 +94,108 @@ export const Login = async (req, res, next) => {
             return next(new AppError('Pin absensi belum terdaftar.', 404, 'PIN_NOT_FOUND'));
         }
 
-        if (!foundUser || !isPasswordCorrect) {
-            // **PENTING**: Jangan beri tahu apakah username atau password yang salah.
-            // Berikan pesan error generik untuk mencegah user enumeration attack.
-            // Gunakan status 401 Unauthorized.
-            return next(new AppError('Username atau password salah.', 401, 'INVALID_CREDENTIALS'));
-        }
-
-        // --- Jika Kredensial Benar ---
-        // Data user yang akan dimasukkan ke dalam token JWT (payload)
-        // Jaga agar payload tetap kecil, hanya berisi info esensial (misal ID user, role)
+        // Payload untuk token
         const payload = {
-            id: foundUser.karyawanid, // atau ID unik user jika berbeda
+            id: foundUser.karyawanid,
+            id_role: foundUser.auth_roleht?.id_role,
             namauser: foundUser.namauser
-            // Tambahkan role atau info penting lain jika perlu, tapi hindari data sensitif
         };
 
-        // Buat token JWT (gunakan versi sinkron karena kita dalam async function)
-        const token = jwt.sign(payload, JWT_SECRETTOKEN);
+        // Generate tokens
+        const accessToken = generateAccessToken(payload);
+        const refreshToken = generateRefreshToken(payload);
 
-        // --- Siapkan data user untuk response (pilih data yang relevan & tidak sensitif) ---
-        // Akses data dari 'foundUser' dan relasinya yang di-include
+        // Simpan refresh token ke database
+        await saveRefreshToken(refreshToken, foundUser.karyawanid);
+
+        // Data user untuk response
         const userDataForResponse = {
             namauser: foundUser.namauser,
             karyawanid: foundUser.karyawanid,
-            nik_kantor: foundUser.pers_datakaryawan?.nik_kantor, // Gunakan optional chaining (?) jika relasi mungkin null
+            nik_kantor: foundUser.pers_datakaryawan?.nik_kantor,
             pin_absen: userPin.pegawai_pin,
             nama_karyawan: foundUser.pers_datakaryawan?.nama_karyawan,
+            id_role: foundUser.auth_roleht?.id_role,
             jabatan: foundUser.pers_datakaryawan?.pers_jabatan?.desc,
             departemen: foundUser.pers_datakaryawan?.pers_departemen?.desc,
             pt: foundUser.pers_datakaryawan?.pers_pt?.nama_pt,
             lokasi: foundUser.pers_datakaryawan?.pers_lokasi?.lokasi,
             status: foundUser.pers_datakaryawan?.status,
             golongan: foundUser.pers_datakaryawan?.golongan
-            // Hati-hati memilih data yang dikirim ke client
         };
 
-        // --- Response Sukses ---
-        // Gunakan res.success (200 OK)
+        // Kirim tokens dan data user
         res.success(
-            { token, user: userDataForResponse }, // Kirim token dan data user yang relevan
+            {
+                accessToken,
+                refreshToken,
+                user: userDataForResponse
+            },
             'Login berhasil.'
         );
     } catch (error) {
-        // --- Penanganan Error ---
-        // Teruskan semua jenis error (database, logic, dll) ke globalErrorHandler
         next(error);
     }
-}
+};
+
+export const refreshAccessToken = async (req, res, next) => {
+    try {
+        // verifyRefreshToken middleware sudah memeriksa validitas token
+        // dan menambahkan data user ke req.user
+
+        // Generate token baru
+        const payload = {
+            id: req.user.id,
+            id_role: req.user.id_role,
+            namauser: req.user.namauser
+        };
+
+        const newAccessToken = generateAccessToken(payload);
+
+        // Update terakhir digunakan pada refresh token
+        await RefreshToken.update(
+            { updated_at: new Date() },
+            { where: { token: req.refreshToken } }
+        );
+
+        res.success({ accessToken: newAccessToken }, 'Token berhasil diperbarui');
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const Logout = async (req, res, next) => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return next(new AppError('Refresh token dibutuhkan', 400, 'REFRESH_TOKEN_REQUIRED'));
+        }
+
+        // Hapus refresh token dari database
+        const deleted = await RefreshToken.destroy({ where: { token: refreshToken } });
+
+        if (deleted === 0) {
+            return res.success({}, 'Logout berhasil, tapi token tidak ditemukan');
+        }
+
+        res.success({}, 'Logout berhasil');
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Fungsi untuk membersihkan token kedaluwarsa
+export const cleanupExpiredTokens = async () => {
+    try {
+        const now = new Date();
+        await RefreshToken.destroy({
+            where: {
+                expires_at: { [Op.lt]: now }
+            }
+        });
+        console.log('Expired tokens cleaned up');
+    } catch (error) {
+        console.error('Error cleaning up expired tokens:', error);
+    }
+};
