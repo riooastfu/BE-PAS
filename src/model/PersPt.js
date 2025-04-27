@@ -3,37 +3,33 @@ import { db } from "../config/database.js";
 
 const { DataTypes } = Sequelize;
 
-const PersPt = db.define('pers_pt', {
+const PersPt = db.define(
+  "pers_pt",
+  {
     kode: {
-        type: DataTypes.STRING(5),
-        primaryKey: true,
-        allowNull: false,
-        collate: 'latin1_swedish_ci'
+      type: DataTypes.STRING(5),
+      primaryKey: true,
+      allowNull: false,
+      collate: "latin1_swedish_ci",
     },
     no_urut: {
-        type: DataTypes.INTEGER(11),
-        allowNull: true
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
     },
     nama_pt: {
-        type: DataTypes.STRING(50),
-        allowNull: true,
-        collate: 'latin1_swedish_ci'
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      collate: "latin1_swedish_ci",
     },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: "0000-00-00 00:00:00"
-    }
-}, {
+  },
+  {
     freezeTableName: true,
-    timestamps: false,
-    charset: 'latin1',
-    collate: 'latin1_swedish_ci'
-});
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    charset: "latin1",
+    collate: "latin1_swedish_ci",
+  }
+);
 
 export default PersPt;
