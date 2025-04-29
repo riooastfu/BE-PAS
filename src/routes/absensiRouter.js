@@ -1,9 +1,11 @@
 import express from 'express';
-import { getDataAbsenUser, getRadiusAbsenByRole } from '../controllers/AbsensiController.js';
-
+import { absenCheckIn, absenCheckOut, getDataAbsenUser, getRadiusAbsenByRole } from '../controllers/AbsensiController.js';
+import { multerImageUpload } from '../config/imageUploader.js';
 const absensiRouter = express.Router();
 
 absensiRouter.get('/:pin', getDataAbsenUser);
 absensiRouter.get('/maps/radius', getRadiusAbsenByRole);
+absensiRouter.post('/masuk', multerImageUpload.single("image"), absenCheckIn);
+absensiRouter.post('/keluar', multerImageUpload.single("image"), absenCheckOut);
 
 export default absensiRouter;

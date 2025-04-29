@@ -3,7 +3,7 @@ import AttLog from '../model/AttLog.js';
 import { col, fn } from 'sequelize';
 import AuthRoleHt from '../model/AuthRoleHt.js';
 import MasterLokasiAbsen from '../model/MasterLokasiAbsen.js';
-import AuthMaps from '../model/AuthMaps.js';
+import moment from 'moment-timezone';
 
 export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
     try {
@@ -16,28 +16,28 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
         }
 
         // 2. Cek Body lainnya
-        const { pin, att_id, coordinate } = req.body;
-        if (!pin || !att_id || !coordinate) {
+        const { pin, coordinate } = req.body;
+        if (!pin || !coordinate) {
             return next(new AppError('Data pin, att_id, dan coordinate dibutuhkan.', 400, 'MISSING_CHECKIN_DATA'));
         }
         // TODO: Pertimbangkan validasi yang lebih spesifik (misal format tanggal, tipe data) menggunakan express-validator
 
         // --- Logika Utama ---
         // Image url (konstruksi URL sebaiknya hati-hati, pertimbangkan base URL dari env)
-        const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        const image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
 
         // --- Interaksi Database (Menggunakan Sequelize Model) ---
         // Hindari raw SQL sebisa mungkin untuk keamanan (SQL Injection) & memanfaatkan fitur ORM
         const newAbsenLog = await AttLog.create({
             // Kolom di model Anda: nilai dari request atau hardcoded
-            sn: 'FIO66206019510289', // PERHATIAN: Hardcoded SN?
+            sn: 'Mobile', // PERHATIAN: Hardcoded SN?
             scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
             pin: pin,
             verifymode: '20',        // PERHATIAN: Hardcoded verifymode?
             inoutmode: '1',         // PERHATIAN: Hardcoded inoutmode (1 = Check-in?)
-            att_id: att_id,
+            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + pin,
             coordinate: coordinate,
-            image: imageUrl         // Simpan URL atau hanya path/filename?
+            image: image         // Simpan URL atau hanya path/filename?
         });
 
         // --- Response Sukses ---
@@ -54,22 +54,32 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
 export const absenCheckOut = async (req, res, next) => { // Tambahkan 'next'
     try {
         // --- Validasi Input ---
-        const { pin, att_id, coordinate } = req.body;
-        if (!pin || !att_id || !coordinate) {
+        // 1. Cek File Upload
+        if (!req.file) {
+            // Gunakan AppError untuk error operasional yang diketahui
+            // 400 Bad Request lebih cocok daripada 422 jika hanya cek keberadaan
+            return next(new AppError('Gambar bukti absen harus diunggah.', 400, 'IMAGE_REQUIRED'));
+        }
+        // 2. Check body lainnya
+        const { pin, coordinate } = req.body;
+        if (!pin || !coordinate) {
             return next(new AppError('Data pin, att_id, dan coordinate dibutuhkan.', 400, 'MISSING_CHECKOUT_DATA'));
         }
         // TODO: Validasi lebih lanjut
 
+        // Image url (konstruksi URL sebaiknya hati-hati, pertimbangkan base URL dari env)
+        const image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
         // --- Interaksi Database (Menggunakan Sequelize Model) ---
         const newAbsenLog = await AttLog.create({
-            sn: 'FIO66206019510289', // PERHATIAN: Hardcoded SN?
+            sn: 'Mobile', // PERHATIAN: Hardcoded SN?
             scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
             pin: pin,
             verifymode: '20',        // PERHATIAN: Hardcoded verifymode?
-            inoutmode: '0',         // PERHATIAN: Hardcoded inoutmode (0 = Check-out?) - Sesuaikan jika berbeda
-            att_id: att_id,
+            inoutmode: '0',         // PERHATIAN: Hardcoded inoutmode (1 = Check-in?)
+            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + pin,
             coordinate: coordinate,
-            // image: null // Tidak ada image saat checkout? Pastikan model mengizinkan null jika kolom ada
+            image: image         // Simpan URL atau hanya path/filename?
         });
 
         // --- Response Sukses ---

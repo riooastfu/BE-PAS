@@ -62,10 +62,10 @@ export const Login = async (req, res, next) => {
                         'nik_kantor', 'nama_karyawan', 'status', 'golongan'
                     ],
                     include: [
-                        { model: PersJabatanModel, attributes: ['kode'] },
-                        { model: PersDepartemenModel, attributes: ['kode'] },
-                        { model: PersPtModel, attributes: ['kode'] },
-                        { model: PersLokasiModel, attributes: ['kode'] },
+                        { model: PersJabatanModel, attributes: ['desc'] },
+                        { model: PersDepartemenModel, attributes: ['desc'] },
+                        { model: PersPtModel, attributes: ['nama_pt'] },
+                        { model: PersLokasiModel, attributes: ['lokasi'] },
                     ]
                 },
                 {
