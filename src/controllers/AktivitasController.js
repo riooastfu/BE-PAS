@@ -44,32 +44,6 @@ export const getLaporanHarianById = async (req, res, next) => {
     }
 };
 
-// export const getNoUrutLaporanHarian = async (req, res, next) => { // Tambahkan next
-//     try {
-//         const { id_laporan } = req.params;
-
-//         if (!id_laporan) {
-//             return next(new AppError('Parameter id_laporan dibutuhkan.', 400, 'ID_LAPORAN_REQUIRED'));
-//         }
-
-//         const lastEntry = await PersDataLaporanHarian.findOne({
-//             where: {
-//                 id_laporan: id_laporan
-//             },
-//             attributes: ['no_urut'],
-//             order: [
-//                 ['no_urut', 'DESC']
-//             ]
-//         });
-
-//         const noUrut = lastEntry ? lastEntry.no_urut : 0;
-//         res.success({ no_urut: noUrut }, 'Nomor urut terakhir berhasil diambil.');
-
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
 export const getLaporanKesehatanByNik = async (req, res, next) => {
     try {
         const { nik } = req.params;
@@ -344,14 +318,14 @@ export const deleteLaporanHarianByNoUrut = async (req, res, next) => {
 
 export const deleteLaporanHarianById = async (req, res, next) => {
     try {
-        const { id_laporan } = req.body;
+        const { id_laporan } = req.params;
 
         if (!id_laporan) {
             return next(
                 new AppError(
-                    "Field id_laporan dibutuhkan dalam body request.",
+                    "Parameter id_laporan dibutuhkan di URL.",
                     400,
-                    "ID_LAPORAN_BODY_REQUIRED"
+                    "ID_LAPORAN_PARAM_REQUIRED"
                 )
             );
         }
@@ -373,7 +347,7 @@ export const deleteLaporanHarianById = async (req, res, next) => {
 
 export const deleteLaporanKesehatanById = async (req, res, next) => {
     try {
-        const { id_laporan } = req.body;
+        const { id_laporan } = req.params;
 
         if (!id_laporan) {
             return next(

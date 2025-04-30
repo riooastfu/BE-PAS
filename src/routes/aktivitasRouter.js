@@ -10,7 +10,7 @@ aktivitasRouter.post('/kesehatan/tanggal', getLaporanKesehatanByTanggal);
 aktivitasRouter.post('/harian', createLaporanHarian);
 aktivitasRouter.post('/kesehatan', createLaporanKesehatan);
 aktivitasRouter.delete('/harian/no_urut', deleteLaporanHarianByNoUrut);
-aktivitasRouter.delete('/harian/id', deleteLaporanHarianById);
-aktivitasRouter.delete('/kesehatan/id_laporan', deleteLaporanKesehatanById);
+aktivitasRouter.delete('/harian/:id_laporan', deleteLaporanHarianById);
+aktivitasRouter.delete('/kesehatan/:id_laporan', deleteLaporanKesehatanById);
 
 export default aktivitasRouter;

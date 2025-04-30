@@ -14,8 +14,11 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url); //Setting up the config so we can access file through be
 const __dirname = path.dirname(__filename);
 
+app.use(express.static(path.join(__dirname, "..", "public")));
+
 // Middleware bawaan Express untuk parsing JSON body
 app.use(express.json());
+
 
 // Middleware: Tambahkan helper response ke 'res'
 app.use(responseHandler);
@@ -45,6 +48,5 @@ app.use(cors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     // credentials: true, // Tetap aktif jika website menggunakan cookie
 }));
-app.use(express.static(path.join(__dirname, "public")));
 
 export default app // Ekspor app untuk digunakan di server.js

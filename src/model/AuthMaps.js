@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
 import { db } from "../config/database.js";
+import { Sequelize } from "sequelize";
 import AuthRoleHt from "./AuthRoleHt.js";
 import MasterLokasiAbsen from "./MasterLokasiAbsen.js";
 
@@ -8,12 +8,10 @@ const { DataTypes } = Sequelize;
 const AuthMaps = db.define('auth_maps', {
     id_role: {
         type: DataTypes.INTEGER(11), // Ukuran dalam kurung opsional
-        primaryKey: true, // Bagian dari primary key komposit
         allowNull: false,
     },
     id_map: {
         type: DataTypes.INTEGER(11), // Ukuran dalam kurung opsional
-        primaryKey: true, // Bagian dari primary key komposit
         allowNull: false,
         unsigned: true, // Untuk properti UNSIGNED
     }

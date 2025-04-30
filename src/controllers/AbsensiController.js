@@ -4,89 +4,95 @@ import { col, fn } from 'sequelize';
 import AuthRoleHt from '../model/AuthRoleHt.js';
 import MasterLokasiAbsen from '../model/MasterLokasiAbsen.js';
 import moment from 'moment-timezone';
+import { absenCheckSchema, validateImageFile } from '../schema/AbsensiSchema.js';
+import AuthMaps from '../model/AuthMaps.js';
 
 export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
     try {
-        // --- Validasi Input ---
-        // 1. Cek File Upload
-        if (!req.file) {
-            // Gunakan AppError untuk error operasional yang diketahui
-            // 400 Bad Request lebih cocok daripada 422 jika hanya cek keberadaan
-            return next(new AppError('Gambar bukti absen harus diunggah.', 400, 'IMAGE_REQUIRED'));
+        const file = validateImageFile(req.file);
+
+        const validationResult = absenCheckSchema.safeParse(req.body);
+
+        if (!validationResult.success) {
+            const formattedErrors = validationResult.error.flatten().fieldErrors;
+            return next(
+                new AppError(
+                    "Data input tidak valid.",
+                    422,
+                    "VALIDATION_ERROR",
+                    formattedErrors
+                )
+            );
         }
 
-        // 2. Cek Body lainnya
-        const { pin, coordinate } = req.body;
-        if (!pin || !coordinate) {
-            return next(new AppError('Data pin, att_id, dan coordinate dibutuhkan.', 400, 'MISSING_CHECKIN_DATA'));
-        }
-        // TODO: Pertimbangkan validasi yang lebih spesifik (misal format tanggal, tipe data) menggunakan express-validator
+        const validatedData = validationResult.data;
 
-        // --- Logika Utama ---
-        // Image url (konstruksi URL sebaiknya hati-hati, pertimbangkan base URL dari env)
-        const image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        const image = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
 
-        // --- Interaksi Database (Menggunakan Sequelize Model) ---
-        // Hindari raw SQL sebisa mungkin untuk keamanan (SQL Injection) & memanfaatkan fitur ORM
-        const newAbsenLog = await AttLog.create({
-            // Kolom di model Anda: nilai dari request atau hardcoded
-            sn: 'Mobile', // PERHATIAN: Hardcoded SN?
+        const dataToCreate = {
+            ...validatedData,
+            image: image,
+            sn: 'Mobile',
             scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
-            pin: pin,
-            verifymode: '20',        // PERHATIAN: Hardcoded verifymode?
-            inoutmode: '1',         // PERHATIAN: Hardcoded inoutmode (1 = Check-in?)
-            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + pin,
-            coordinate: coordinate,
-            image: image         // Simpan URL atau hanya path/filename?
+            verifymode: '20',
+            inoutmode: '1',
+            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + validatedData.pin,
+        };
+
+        const newAbsenLog = await AttLog.create({
+            ...validatedData,
+            image: image,
+            sn: 'Mobile',
+            scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
+            verifymode: '20',
+            inoutmode: '1',
+            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + validatedData.pin,
         });
 
-        // --- Response Sukses ---
-        // Gunakan helper dari responseHandler
-        res.created(newAbsenLog, "Berhasil Check-in."); // Kirim data yang baru dibuat jika perlu
+        res.created(newAbsenLog, "Berhasil Check-in.");
 
     } catch (error) {
-        // --- Penanganan Error ---
-        // Teruskan error ke globalErrorHandler
         next(error);
     }
 };
 
 export const absenCheckOut = async (req, res, next) => { // Tambahkan 'next'
     try {
-        // --- Validasi Input ---
-        // 1. Cek File Upload
-        if (!req.file) {
-            // Gunakan AppError untuk error operasional yang diketahui
-            // 400 Bad Request lebih cocok daripada 422 jika hanya cek keberadaan
-            return next(new AppError('Gambar bukti absen harus diunggah.', 400, 'IMAGE_REQUIRED'));
-        }
-        // 2. Check body lainnya
-        const { pin, coordinate } = req.body;
-        if (!pin || !coordinate) {
-            return next(new AppError('Data pin, att_id, dan coordinate dibutuhkan.', 400, 'MISSING_CHECKOUT_DATA'));
-        }
-        // TODO: Validasi lebih lanjut
+        const file = validateImageFile(req.file);
 
-        // Image url (konstruksi URL sebaiknya hati-hati, pertimbangkan base URL dari env)
-        const image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        const validationResult = absenCheckSchema.safeParse(req.body);
 
-        // --- Interaksi Database (Menggunakan Sequelize Model) ---
-        const newAbsenLog = await AttLog.create({
-            sn: 'Mobile', // PERHATIAN: Hardcoded SN?
+        if (!validationResult.success) {
+            const formattedErrors = validationResult.error.flatten().fieldErrors;
+            return next(
+                new AppError(
+                    "Data input tidak valid.",
+                    422,
+                    "VALIDATION_ERROR",
+                    formattedErrors
+                )
+            );
+        }
+
+        const validatedData = validationResult.data;
+
+        const image = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+
+        const dataToCreate = {
+            ...validatedData,
+            image: image,
+            sn: 'Mobile',
             scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
-            pin: pin,
-            verifymode: '20',        // PERHATIAN: Hardcoded verifymode?
-            inoutmode: '0',         // PERHATIAN: Hardcoded inoutmode (1 = Check-in?)
-            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + pin,
-            coordinate: coordinate,
-            image: image         // Simpan URL atau hanya path/filename?
-        });
+            verifymode: '20',
+            inoutmode: '0',
+            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + validatedData.pin,
+        };
 
-        // --- Response Sukses ---
+        const newAbsenLog = await AttLog.create({ dataToCreate });
+
         res.created(newAbsenLog, "Berhasil Check-out.");
 
     } catch (error) {
-        // --- Penanganan Error ---
         next(error);
     }
 };
@@ -154,11 +160,12 @@ export const getRadiusAbsenByRole = async (req, res, next) => {
                 id_role: userRole
             },
             include: [{
-                model: MasterLokasiAbsen
+                model: MasterLokasiAbsen,
+                attributes: ['tikor', 'nama_lokasi', 'radius'],
             }]
         });
 
-        res.success(maps, 'Data radius absen by role berhasil diambil.');
+        res.success(maps[0].master_lokasi_absens, 'Data radius absen by role berhasil diambil.');
     } catch (error) {
         next(error);
     }
