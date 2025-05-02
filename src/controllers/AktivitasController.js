@@ -153,7 +153,6 @@ export const getLaporanKesehatanByTanggal = async (req, res, next) => {
 };
 
 export const createLaporanHarian = async (req, res, next) => {
-    // Tambahkan next
     try {
         const validationResult = laporanHarianSchema.safeParse(req.body);
 

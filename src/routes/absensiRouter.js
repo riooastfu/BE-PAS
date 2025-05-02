@@ -1,6 +1,6 @@
 import express from 'express';
 import { absenCheckIn, absenCheckOut, getDataAbsenUser, getRadiusAbsenByRole } from '../controllers/AbsensiController.js';
-import { multerImageUpload } from '../config/imageUploader.js';
+import { multerImageUpload } from '../config/image.js';
 const absensiRouter = express.Router();
 
 absensiRouter.get('/maps/radius', getRadiusAbsenByRole);

@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import { db } from "../config/database.js";
+import PersDataLaporanKesehatan from "./PersDataLaporanKesehatan.js";
 
 const { DataTypes } = Sequelize;
 
@@ -56,5 +57,12 @@ const PersDataLaporanHarian = db.define(
     updatedAt: "updated_at",
   }
 );
+
+PersDataLaporanKesehatan.hasMany(PersDataLaporanHarian, {
+  foreignKey: "id_laporan",
+  sourceKey: "id_laporan",
+});
+PersDataLaporanHarian.belongsTo(PersDataLaporanKesehatan);
+
 
 export default PersDataLaporanHarian;

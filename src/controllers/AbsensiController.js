@@ -6,9 +6,14 @@ import MasterLokasiAbsen from '../model/MasterLokasiAbsen.js';
 import moment from 'moment-timezone';
 import { absenCheckSchema, validateImageFile } from '../schema/AbsensiSchema.js';
 import AuthMaps from '../model/AuthMaps.js';
+import { ensureUploadsDirectory } from '../config/image.js';
+import path from 'path';
+import sharp from 'sharp';
 
 export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
     try {
+        await ensureUploadsDirectory();
+
         const file = validateImageFile(req.file);
 
         const validationResult = absenCheckSchema.safeParse(req.body);
@@ -27,27 +32,32 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
 
         const validatedData = validationResult.data;
 
-        const image = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+        const timestamp = Date.now();
+        const originalNameParts = file.originalname.split('.');
+        const extension = originalNameParts.length > 1 ? `.${originalNameParts.pop()}` : '.jpg'; // Default to jpg if no extension
+        const baseFilename = originalNameParts.join('.');
+        const compressedFilename = `${timestamp}-${baseFilename}${extension}`; // Use a descriptive name
+        const compressedPath = path.join('public', 'uploads', compressedFilename); // Full path to save
+
+        await sharp(file.buffer) // Process the buffer directly
+            .resize({ width: 1000 }) // Optional: Resize
+            .jpeg({ quality: 75, mozjpeg: true }) // Compress JPEG
+            .png({ compressionLevel: 8, quality: 75 }) // Compress PNG
+            .toFile(compressedPath); // Save the compressed image to disk
+
+        const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${compressedFilename}`;
 
         const dataToCreate = {
             ...validatedData,
-            image: image,
+            image: imageUrl,
             sn: 'Mobile',
-            scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
+            scan_date: moment(new Date()).format('yyyy-MM-DD HH:mm:ss'),
             verifymode: '20',
             inoutmode: '1',
-            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + validatedData.pin,
+            att_id: moment(new Date()).format('DDMMyyyyHHmmss') + "MOBILE" + validatedData.pin,
         };
 
-        const newAbsenLog = await AttLog.create({
-            ...validatedData,
-            image: image,
-            sn: 'Mobile',
-            scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
-            verifymode: '20',
-            inoutmode: '1',
-            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + validatedData.pin,
-        });
+        const newAbsenLog = await AttLog.create(dataToCreate);
 
         res.created(newAbsenLog, "Berhasil Check-in.");
 
@@ -58,6 +68,8 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
 
 export const absenCheckOut = async (req, res, next) => { // Tambahkan 'next'
     try {
+        await ensureUploadsDirectory();
+
         const file = validateImageFile(req.file);
 
         const validationResult = absenCheckSchema.safeParse(req.body);
@@ -76,19 +88,32 @@ export const absenCheckOut = async (req, res, next) => { // Tambahkan 'next'
 
         const validatedData = validationResult.data;
 
-        const image = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+        const timestamp = Date.now();
+        const originalNameParts = file.originalname.split('.');
+        const extension = originalNameParts.length > 1 ? `.${originalNameParts.pop()}` : '.jpg'; // Default to jpg if no extension
+        const baseFilename = originalNameParts.join('.');
+        const compressedFilename = `${timestamp}-${baseFilename}${extension}`; // Use a descriptive name
+        const compressedPath = path.join('public', 'uploads', compressedFilename); // Full path to save
+
+        await sharp(file.buffer) // Process the buffer directly
+            .resize({ width: 1000 }) // Optional: Resize
+            .jpeg({ quality: 75, mozjpeg: true }) // Compress JPEG
+            .png({ compressionLevel: 8, quality: 75 }) // Compress PNG
+            .toFile(compressedPath); // Save the compressed image to disk
+
+        const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${compressedFilename}`;
 
         const dataToCreate = {
             ...validatedData,
-            image: image,
+            image: imageUrl,
             sn: 'Mobile',
-            scan_date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
+            scan_date: moment(new Date()).format('yyyy-MM-DD HH:mm:ss'),
             verifymode: '20',
             inoutmode: '0',
-            att_id: moment(new Date()).format('DDMMyyyyhhmmss') + "MOBILE" + validatedData.pin,
+            att_id: moment(new Date()).format('DDMMyyyyHHmmss') + "MOBILE" + validatedData.pin,
         };
 
-        const newAbsenLog = await AttLog.create({ dataToCreate });
+        const newAbsenLog = await AttLog.create(dataToCreate);
 
         res.created(newAbsenLog, "Berhasil Check-out.");
 

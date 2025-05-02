@@ -1,7 +1,6 @@
 import z from 'zod';
 
 export const laporanHarianSchema = z.object({
-    // Definisikan tipe data dan aturan untuk setiap field di req.body
     id_laporan: z.string().min(1, { message: "Id laporan tidak boleh kosong" }), // Pastikan tidak string kosong
     nik: z.string().min(1, { message: "NIK dibutuhkan" }),
     nik_kantor: z.string().min(1, { message: "NIK Kantor dibutuhkan" }),
@@ -13,8 +12,8 @@ export const laporanHarianSchema = z.object({
     pt: z.string().min(1, { message: "PT dibutuhkan" }),
     kategori: z.string().min(1, { message: "Kategori dibutuhkan" }),
     lokasi_kerja: z.string().min(1, { message: "Lokasi Kerja dibutuhkan" }),
-    atasan_langsung: z.string().min(1, { message: "Atasan Langsung dibutuhkan" }),
-}).strict(); // .strict() akan menolak field tambahan yang tidak ada di skema
+    atasan_langsung: z.string().optional(),
+}).strict();
 
 export const laporanKesehatanSchema = z.object({
     // Definisikan tipe data dan aturan untuk setiap field di req.body

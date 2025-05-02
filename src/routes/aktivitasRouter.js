@@ -4,8 +4,8 @@ import { createLaporanHarian, createLaporanKesehatan, deleteLaporanHarianById, d
 const aktivitasRouter = express.Router();
 
 aktivitasRouter.get('/harian/:id_laporan', getLaporanHarianById);
-aktivitasRouter.get('/kesehatan/:nik', getLaporanKesehatanByNik);
-aktivitasRouter.get('/kesehatan/:id_laporan', getLaporanKesehatanById);
+aktivitasRouter.get('/kesehatan/nik/:nik', getLaporanKesehatanByNik);
+aktivitasRouter.get('/kesehatan/id/:id_laporan', getLaporanKesehatanById);
 aktivitasRouter.post('/kesehatan/tanggal', getLaporanKesehatanByTanggal);
 aktivitasRouter.post('/harian', createLaporanHarian);
 aktivitasRouter.post('/kesehatan', createLaporanKesehatan);

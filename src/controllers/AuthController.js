@@ -9,12 +9,12 @@ import PersPtModel from "../model/PersPt.js";
 import Pegawai from '../model/Pegawai.js';
 import { AppError } from '../utils/errorHandler.js';
 import RefreshToken from '../model/RefreshToken.js';
-import { Op } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 import AuthRoleHt from '../model/AuthRoleHt.js';
 
 // Fungsi untuk membuat access token
 const generateAccessToken = (payload) => {
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
 // Fungsi untuk membuat refresh token
@@ -153,10 +153,17 @@ export const refreshAccessToken = async (req, res, next) => {
         const newAccessToken = generateAccessToken(payload);
 
         // Update terakhir digunakan pada refresh token
-        await RefreshToken.update(
-            { updated_at: new Date() },
-            { where: { token: req.refreshToken } }
-        );
+        // const [updated] = await RefreshToken.update(
+        //     { updated_at: new Date() },            // data yang ingin diupdate
+        //     { where: { token: req.refreshToken } }         // kondisi update
+        // );
+
+        // TODO:: Masih Perlu refactor karena menggunakan raw query
+        const updated = await RefreshToken.sequelize.query(`UPDATE refresh_tokens SET updated_at = NOW() WHERE token = '${req.refreshToken}'`, {
+            type: QueryTypes.UPDATE
+        });
+
+        console.log('Refresh token updated in database:', req.refreshToken);
 
         res.success({ accessToken: newAccessToken }, 'Token berhasil diperbarui');
     } catch (error) {

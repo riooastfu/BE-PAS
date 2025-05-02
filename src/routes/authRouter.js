@@ -5,7 +5,7 @@ import { verifyRefreshToken } from '../middleware/middleware.js';
 const authRouter = express.Router();
 
 authRouter.post('/login', Login);
-authRouter.post('/refresh-token', verifyRefreshToken, refreshAccessToken);
+authRouter.patch('/refresh-token', [verifyRefreshToken], refreshAccessToken);
 authRouter.post('/logout', Logout);
 
 export default authRouter;
