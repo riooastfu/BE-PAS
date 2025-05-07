@@ -152,20 +152,20 @@ export const refreshAccessToken = async (req, res, next) => {
 
         const newAccessToken = generateAccessToken(payload);
 
-        // Update terakhir digunakan pada refresh token
-        // const [updated] = await RefreshToken.update(
-        //     { updated_at: new Date() },            // data yang ingin diupdate
-        //     { where: { token: req.refreshToken } }         // kondisi update
-        // );
+        const newExpiresAt = new Date();
+        newExpiresAt.setDate(newExpiresAt.getDate() + 14); // Set masa berlaku baru
 
-        // TODO:: Masih Perlu refactor karena menggunakan raw query
-        const updated = await RefreshToken.sequelize.query(`UPDATE refresh_tokens SET updated_at = NOW() WHERE token = '${req.refreshToken}'`, {
-            type: QueryTypes.UPDATE
-        });
+        const [affectedRows] = await RefreshToken.update({
+            expires_at: newExpiresAt
+        }, {
+            where: { token: req.refreshToken }
+        })
 
-        console.log('Refresh token updated in database:', req.refreshToken);
-
-        res.success({ accessToken: newAccessToken }, 'Token berhasil diperbarui');
+        if (affectedRows > 0) {
+            res.success({ accessToken: newAccessToken }, 'Token berhasil diperbarui');
+        } else {
+            return next(new AppError('Gagal memperbarui token.', 500, 'TOKEN_UPDATE_FAILED'));
+        }
     } catch (error) {
         next(error);
     }

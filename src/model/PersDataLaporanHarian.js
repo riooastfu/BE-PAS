@@ -62,7 +62,10 @@ PersDataLaporanKesehatan.hasMany(PersDataLaporanHarian, {
   foreignKey: "id_laporan",
   sourceKey: "id_laporan",
 });
-PersDataLaporanHarian.belongsTo(PersDataLaporanKesehatan);
+PersDataLaporanHarian.belongsTo(PersDataLaporanKesehatan, {
+  foreignKey: "id_laporan", // This is the foreign key column in the PersDataLaporanHarian table
+  targetKey: "id_laporan"   // This is the column in the PersDataLaporanKesehatan table that id_laporan (in PersDataLaporanHarian) references
+});
 
 
 export default PersDataLaporanHarian;

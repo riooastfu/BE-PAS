@@ -1,6 +1,6 @@
 import { AppError } from '../utils/errorHandler.js'; // Sesuaikan path jika perlu
 import AttLog from '../model/AttLog.js';
-import { col, fn } from 'sequelize';
+import { col, fn, QueryTypes } from 'sequelize';
 import AuthRoleHt from '../model/AuthRoleHt.js';
 import MasterLokasiAbsen from '../model/MasterLokasiAbsen.js';
 import moment from 'moment-timezone';
@@ -32,11 +32,19 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
 
         const validatedData = validationResult.data;
 
-        const timestamp = Date.now();
+        const timeServer = new Date();
+        const timeDevice = new Date(validatedData.scan_date);
+
+        const timeDiff = Math.abs(timeServer - timeDevice); // Difference in milliseconds
+
+        if (timeDiff > 120000) { // 2 minutes in milliseconds
+            return next(new AppError('Waktu server dan perangkat tidak sinkron.', 400, 'TIME_MISMATCH'));
+        }
+
         const originalNameParts = file.originalname.split('.');
         const extension = originalNameParts.length > 1 ? `.${originalNameParts.pop()}` : '.jpg'; // Default to jpg if no extension
         const baseFilename = originalNameParts.join('.');
-        const compressedFilename = `${timestamp}-${baseFilename}${extension}`; // Use a descriptive name
+        const compressedFilename = `${moment(validatedData.scan_date).format('DDMMYYYYHHmmss')}-${baseFilename}${extension}`; // Use a descriptive name
         const compressedPath = path.join('public', 'uploads', compressedFilename); // Full path to save
 
         await sharp(file.buffer) // Process the buffer directly
@@ -51,15 +59,32 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
             ...validatedData,
             image: imageUrl,
             sn: 'Mobile',
-            scan_date: moment(new Date()).format('yyyy-MM-DD HH:mm:ss'),
+            scan_date: moment(validatedData.scan_date).format('YYYY-MM-DD HH:mm:ss'),
             verifymode: '20',
             inoutmode: '1',
-            att_id: moment(new Date()).format('DDMMyyyyHHmmss') + "MOBILE" + validatedData.pin,
+            att_id: moment(validatedData.scan_date).format('DDMMYYYYHHmmss') + "MOBILE" + validatedData.pin,
         };
 
-        const newAbsenLog = await AttLog.create(dataToCreate);
+        const sql = `INSERT INTO att_log (sn, scan_date, pin, verifymode, inoutmode, reserved, work_code, att_id, coordinate, image)
+             VALUES (:sn, :scan_date, :pin, :verifymode, :inoutmode, '', '', :att_id, :coordinate, :image)`;
 
-        res.created(newAbsenLog, "Berhasil Check-in.");
+        const replacements = {
+            sn: dataToCreate.sn,
+            scan_date: dataToCreate.scan_date, // String tanggal lokal Anda aman di sini
+            pin: dataToCreate.pin,
+            verifymode: dataToCreate.verifymode,
+            inoutmode: dataToCreate.inoutmode,
+            att_id: dataToCreate.att_id,
+            coordinate: dataToCreate.coordinate,
+            image: dataToCreate.image
+        };
+
+        const [affectedRows] = await AttLog.sequelize.query(sql, {
+            replacements: replacements,
+            type: QueryTypes.INSERT
+        });
+
+        res.created(dataToCreate, "Berhasil Check-in.");
 
     } catch (error) {
         next(error);
@@ -88,11 +113,19 @@ export const absenCheckOut = async (req, res, next) => { // Tambahkan 'next'
 
         const validatedData = validationResult.data;
 
-        const timestamp = Date.now();
+        const timeServer = new Date();
+        const timeDevice = new Date(validatedData.scan_date);
+
+        const timeDiff = Math.abs(timeServer - timeDevice); // Difference in milliseconds
+
+        if (timeDiff > 120000) { // 2 minutes in milliseconds
+            return next(new AppError('Waktu server dan perangkat tidak sinkron.', 400, 'TIME_MISMATCH'));
+        }
+
         const originalNameParts = file.originalname.split('.');
         const extension = originalNameParts.length > 1 ? `.${originalNameParts.pop()}` : '.jpg'; // Default to jpg if no extension
         const baseFilename = originalNameParts.join('.');
-        const compressedFilename = `${timestamp}-${baseFilename}${extension}`; // Use a descriptive name
+        const compressedFilename = `${moment(timeDevice).format('DDMMYYYYHHmmss')}-${baseFilename}${extension}`; // Use a descriptive name
         const compressedPath = path.join('public', 'uploads', compressedFilename); // Full path to save
 
         await sharp(file.buffer) // Process the buffer directly
@@ -107,15 +140,32 @@ export const absenCheckOut = async (req, res, next) => { // Tambahkan 'next'
             ...validatedData,
             image: imageUrl,
             sn: 'Mobile',
-            scan_date: moment(new Date()).format('yyyy-MM-DD HH:mm:ss'),
+            scan_date: moment(validatedData.scan_date).format('YYYY-MM-DD HH:mm:ss'),
             verifymode: '20',
             inoutmode: '0',
-            att_id: moment(new Date()).format('DDMMyyyyHHmmss') + "MOBILE" + validatedData.pin,
+            att_id: moment(validatedData.scan_date).format('DDMMYYYYHHmmss') + "MOBILE" + validatedData.pin,
         };
 
-        const newAbsenLog = await AttLog.create(dataToCreate);
+        const sql = `INSERT INTO att_log (sn, scan_date, pin, verifymode, inoutmode, reserved, work_code, att_id, coordinate, image)
+             VALUES (:sn, :scan_date, :pin, :verifymode, :inoutmode, '', '', :att_id, :coordinate, :image)`;
 
-        res.created(newAbsenLog, "Berhasil Check-out.");
+        const replacements = {
+            sn: dataToCreate.sn,
+            scan_date: dataToCreate.scan_date,
+            pin: dataToCreate.pin,
+            verifymode: dataToCreate.verifymode,
+            inoutmode: dataToCreate.inoutmode,
+            att_id: dataToCreate.att_id,
+            coordinate: dataToCreate.coordinate,
+            image: dataToCreate.image
+        };
+
+        const [affectedRows] = await AttLog.sequelize.query(sql, {
+            replacements: replacements,
+            type: QueryTypes.INSERT
+        });
+
+        res.created(dataToCreate, "Berhasil Check-in.");
 
     } catch (error) {
         next(error);

@@ -1,8 +1,10 @@
 import z from 'zod';
+import { AppError } from '../utils/errorHandler.js';
 
 export const absenCheckSchema = z.object({
     pin: z.coerce.number(), // kalau dikirim dari form-data, biasanya string
     coordinate: z.string(),
+    scan_date: z.string()
 });
 
 /** Validasi custom untuk file image absen */
