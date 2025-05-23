@@ -1,0 +1,748 @@
+{
+	"info": {
+		"_postman_id": "105bbe44-d311-48df-8e54-37090f91039f",
+		"name": "pastimobile",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33974273"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"namauser\": \"rio.ozora\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAyLCJpZF9yb2xlIjoxLCJuYW1hdXNlciI6Iml0LmRldiIsImlhdCI6MTc0NjY5NDAwNCwiZXhwIjoxNzQ3OTAzNjA0fQ.CK4a7YZODPVkb5APjK7Z6ynfTiK-vV61SXix2-2puJk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/refresh-token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "absensi",
+			"item": [
+				{
+					"name": "absensi",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDYxNDk2MTYsImV4cCI6MTc0NjE1MzIxNn0.7MvHYefVG1X3f7B85zDRSvWXIE6vDRY8w1fmh8opL1Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/absensi/1274",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"absensi",
+								"1274"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "radius absen",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDYxNDk2MTYsImV4cCI6MTc0NjE1MzIxNn0.7MvHYefVG1X3f7B85zDRSvWXIE6vDRY8w1fmh8opL1Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/absensi/maps/radius",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"absensi",
+								"maps",
+								"radius"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "absen masuk",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDY0MTcyNDAsImV4cCI6MTc0NzU0MDQ0MH0.CVu8thaTQgvAVI4lQ8-_5kmBzryKhd_Mb3BplBklVPo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "pin",
+									"value": "1328",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/rioal/OneDrive/Pictures/WallpaperEngineLockOverride_randomFNXCUN.jpg"
+								},
+								{
+									"key": "coordinate",
+									"value": "ini koordinatasas",
+									"type": "text"
+								},
+								{
+									"key": "scan_date",
+									"value": "2025-05-05 16:21:00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/absensi/masuk",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"absensi",
+								"masuk"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "home",
+			"item": [
+				{
+					"name": "birthday",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDU5MTMxNjcsImV4cCI6MTc0NTkxNjc2N30.WLpEaqNlMnRM4kZ6z1y8u7RrpDT8W_16NURwMNvwKIo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/home/birthday/PAS",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"home",
+								"birthday",
+								"PAS"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "aktivitas",
+			"item": [
+				{
+					"name": "laporan harian by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDYxNzIzODAsImV4cCI6MTc0NjE3NTk4MH0.7eZX4MUW3AVcwHNeYsfiaS3zEOlTC7PHxc43qz9lgGk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/aktivitas/harian/0000001612_2025-03-05",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"aktivitas",
+								"harian",
+								"0000001612_2025-03-05"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "laporan kesehatan by nik",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDYxODA0NDgsImV4cCI6MTc0NjE4MDUwOH0.5GSmeiTU3RR_Oa-DwrVrxVvzbd6Lc1HKxGThKwQBqY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/aktivitas/kesehatan/nik/0000000202",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"aktivitas",
+								"kesehatan",
+								"nik",
+								"0000000202"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "laporan kesehatan by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDYxNzIzODAsImV4cCI6MTc0NjE3NTk4MH0.7eZX4MUW3AVcwHNeYsfiaS3zEOlTC7PHxc43qz9lgGk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/aktivitas/kesehatan/0000001461_2025-04-13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"aktivitas",
+								"kesehatan",
+								"0000001461_2025-04-13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "laporan kesehatan by tanggal",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "laporan kesehatan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDU4MDc4NDcsImV4cCI6MTc0NTgxMTQ0N30.nTFTW7m0lfzhDtgJyJxOVCeQrEkwjPQSNcq7klINyfs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nik\" : \"0000000202\",\r\n    \"nik_kantor\" : \"0117050024\",\r\n    \"tanggal\" : \"\",\r\n    \"jam_masuk\" : \"07:49:37\",\r\n    \"jam_pulang\" : \"17:02:37\",\r\n    \"status_kerja\" : \"Masuk\",\r\n    \"kesehatan_tanggal\" : \"\",\r\n    \"kesehatan_nama\" : \"\",\r\n    \"kesehatan_dept\" : \"\",\r\n    \"kesehatan_jabatan\" : \"\",\r\n    \"kesehatan_pt\" : \"\",\r\n    \"kesehatan_suhu\" : \"\",\r\n    \"kesehatan_keluarga\" : \"\",\r\n    \"kesehatan_kontak\":\"\",\r\n    \"kesehatan_resiko\":\"\",\r\n    \"kesehatan_pagi\":\"\",\r\n    \"kesehatan_malam\":\"\",\r\n    \"kesehatan_berobat\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/aktivitas/kesehatan/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"aktivitas",
+								"kesehatan",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "laporan harian",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDU4MDc4NDcsImV4cCI6MTc0NTgxMTQ0N30.nTFTW7m0lfzhDtgJyJxOVCeQrEkwjPQSNcq7klINyfs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_laporan\": \"0000000202_2025-04-28\",\r\n    \"nik\" : \"0000000202\",\r\n    \"nik_kantor\" : \"0117050024\",\r\n    \"nama_karyawan\": \"Reza Davrian\",\r\n    \"jabatan_karyawan\": \"Supervisor\",\r\n    \"dept_karyawan\":\"IT\",\r\n    \"uraian_kegiatan\":\"Support MsGP\",\r\n    \"target_harian\":\"Selesai\",\r\n    \"pt\":\"Pasifik Agro Sentosa\",\r\n    \"kategori\": \"Rutin\",\r\n    \"lokasi_kerja\": \"Kantor PAS Jakarta\",\r\n    \"atasan_langsung\": \"0000000171\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/aktivitas/harian/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"aktivitas",
+								"harian",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cuti",
+			"item": [
+				{
+					"name": "get cuti user by atasan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDU5ODY1NzUsImV4cCI6MTc0NTk5MDE3NX0.iRMxhpDkzqQJ8wgzZIdkrLU7xN9MPAMhN12ERbaHVIY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/detail/atasan/0000000246",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"detail",
+								"atasan",
+								"0000000246"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "hari libur",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMyOCwiaWRfcm9sZSI6MSwibmFtYXVzZXIiOiJyaW8ub3pvcmEiLCJpYXQiOjE3NDU5ODY1NzUsImV4cCI6MTc0NTk5MDE3NX0.iRMxhpDkzqQJ8wgzZIdkrLU7xN9MPAMhN12ERbaHVIY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/harilibur",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"harilibur"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuti by nik",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAyLCJpZF9yb2xlIjoxLCJuYW1hdXNlciI6Iml0LmRldiIsImlhdCI6MTc0Njc3NDA5MywiZXhwIjoxNzQ3Mzc4ODkzfQ.m94ZpulSrr2JXW1UBlob3Lh1lX-MiA-oDIUcDQSriyM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/0000001328",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"0000001328"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuti by id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "cuti pic user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAyLCJpZF9yb2xlIjoxLCJuYW1hdXNlciI6Iml0LmRldiIsImlhdCI6MTc0NzE5MTQ1MSwiZXhwIjoxNzQ3Nzk2MjUxfQ.hfWp_jl8ry9j3nMGPQpCqJJ8Of1sVrdxV5D5IYZdwAI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nik\" : 1328,\r\n    \"departemen\" : \"D020\",\r\n    \"perusahaan\" : \"PAS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/pic/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"pic",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuti atasan user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAyLCJpZF9yb2xlIjoxLCJuYW1hdXNlciI6Iml0LmRldiIsImlhdCI6MTc0NzE5MTQ1MSwiZXhwIjoxNzQ3Nzk2MjUxfQ.hfWp_jl8ry9j3nMGPQpCqJJ8Of1sVrdxV5D5IYZdwAI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nik\" : 1328,\r\n    \"departemen\" : \"D020\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/atasan/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"atasan",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuti hari libur",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAyLCJpZF9yb2xlIjoxLCJuYW1hdXNlciI6Iml0LmRldiIsImlhdCI6MTc0NzE5MTQ1MSwiZXhwIjoxNzQ3Nzk2MjUxfQ.hfWp_jl8ry9j3nMGPQpCqJJ8Of1sVrdxV5D5IYZdwAI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nik\" : \"0000001328\",\r\n    \"departemen\" : \"D020\",\r\n    \"perusahaan\" : \"PAS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/pic/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"pic",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuti create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAyLCJpZF9yb2xlIjoxLCJuYW1hdXNlciI6Iml0LmRldiIsImlhdCI6MTc0Njc3NDA5MywiZXhwIjoxNzQ3Mzc4ODkzfQ.m94ZpulSrr2JXW1UBlob3Lh1lX-MiA-oDIUcDQSriyM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_cuti\" : \"2025_0000001328\",\r\n    \"tanggal_mulai\": \"2025-05-09\",\r\n    \"tanggal_berakhir\": \"2025-05-11\",\r\n    \"tipe_cuti\": \"CT\",\r\n    \"alasan\": \"Pribadi\",\r\n    \"alamat_cuti\": \"Medan\",\r\n    \"pic\": \"202\",\r\n    \"atasan\": \"171\"       \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/cuti/detail",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"cuti",
+								"detail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -23,7 +23,7 @@ export const absenCheckIn = async (req, res, next) => { // Tambahkan 'next'
             return next(
                 new AppError(
                     "Data input tidak valid.",
-                    422,
+                    400,
                     "VALIDATION_ERROR",
                     formattedErrors
                 )
@@ -181,7 +181,7 @@ export const getDataAbsenUser = async (req, res, next) => { // Tambahkan next
 
         // --- Validasi Input Dasar ---
         if (!pin) {
-            return next(new AppError('PIN absen Pegawai dibutuhkan pada parameter URL.', 400, 'PIN_REQUIRED'));
+            return next(new AppError('PIN absen Pegawai dibutuhkan.', 400, 'MISSING_PARAMETER'));
         }
 
         // --- Query menggunakan Sequelize ORM ---

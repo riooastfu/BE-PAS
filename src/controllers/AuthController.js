@@ -11,10 +11,12 @@ import { AppError } from '../utils/errorHandler.js';
 import RefreshToken from '../model/RefreshToken.js';
 import { Op, QueryTypes } from 'sequelize';
 import AuthRoleHt from '../model/AuthRoleHt.js';
+import { passwordValidation } from '../lib/password-validation.js';
+import UserLog from '../model/UserLog.js';
 
 // Fungsi untuk membuat access token
 const generateAccessToken = (payload) => {
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
 // Fungsi untuk membuat refresh token
@@ -26,7 +28,7 @@ const generateRefreshToken = (payload) => {
 const saveRefreshToken = async (token, karyawanid) => {
     // Atur masa berlaku token untuk dua minggu dari sekarang
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 14);
+    expiresAt.setDate(expiresAt.getDay() + 14);
 
     // Hapus token lama untuk user yang sama untuk mencegah penumpukan token
     await RefreshToken.destroy({ where: { karyawanid: karyawanid } });
@@ -62,10 +64,10 @@ export const Login = async (req, res, next) => {
                         'nik_kantor', 'nama_karyawan', 'status', 'golongan'
                     ],
                     include: [
-                        { model: PersJabatanModel, attributes: ['desc'] },
-                        { model: PersDepartemenModel, attributes: ['desc'] },
-                        { model: PersPtModel, attributes: ['nama_pt'] },
-                        { model: PersLokasiModel, attributes: ['lokasi'] },
+                        { model: PersJabatanModel, attributes: ['kode'] },
+                        { model: PersDepartemenModel, attributes: ['kode'] },
+                        { model: PersPtModel, attributes: ['kode'] },
+                        { model: PersLokasiModel, attributes: ['kode'] },
                     ]
                 },
                 {
@@ -75,7 +77,7 @@ export const Login = async (req, res, next) => {
                     ]
                 }
             ],
-            attributes: ['namauser', 'password', 'karyawanid']
+            attributes: ['namauser', 'password', 'karyawanid', 'status']
         });
 
         const hashPassword = crypto.createHash('md5').update(password).digest('hex');
@@ -83,6 +85,10 @@ export const Login = async (req, res, next) => {
 
         if (!foundUser || !isPasswordCorrect) {
             return next(new AppError('Username atau password salah.', 401, 'INVALID_CREDENTIALS'));
+        }
+
+        if (foundUser.status == 0) {
+            return next(new AppError('User tidak aktif', 401, 'USER_INACTIVE'));
         }
 
         const userPin = await Pegawai.findOne({
@@ -93,6 +99,13 @@ export const Login = async (req, res, next) => {
         if (!userPin) {
             return next(new AppError('Pin absensi belum terdaftar.', 404, 'PIN_NOT_FOUND'));
         }
+
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+        const isPasswordExpired = !foundUser.password_changed_at ||
+            new Date(foundUser.password_changed_at) < threeMonthsAgo;
+
 
         // Payload untuk token
         const payload = {
@@ -116,10 +129,10 @@ export const Login = async (req, res, next) => {
             pin_absen: userPin.pegawai_pin,
             nama_karyawan: foundUser.pers_datakaryawan?.nama_karyawan,
             id_role: foundUser.auth_roleht?.id_role,
-            jabatan: foundUser.pers_datakaryawan?.pers_jabatan?.desc,
-            departemen: foundUser.pers_datakaryawan?.pers_departemen?.desc,
-            pt: foundUser.pers_datakaryawan?.pers_pt?.nama_pt,
-            lokasi: foundUser.pers_datakaryawan?.pers_lokasi?.lokasi,
+            jabatan: foundUser.pers_datakaryawan?.pers_jabatan?.kode,
+            departemen: foundUser.pers_datakaryawan?.pers_departemen?.kode,
+            pt: foundUser.pers_datakaryawan?.pers_pt?.kode,
+            lokasi: foundUser.pers_datakaryawan?.pers_lokasi?.kode,
             status: foundUser.pers_datakaryawan?.status,
             golongan: foundUser.pers_datakaryawan?.golongan
         };
@@ -131,7 +144,9 @@ export const Login = async (req, res, next) => {
                 refreshToken,
                 user: userDataForResponse
             },
-            'Login berhasil.'
+            isPasswordExpired
+                ? 'Login berhasil. Password Anda telah kedaluwarsa, mohon perbarui segera.'
+                : 'Login berhasil.'
         );
     } catch (error) {
         next(error);
@@ -192,7 +207,83 @@ export const Logout = async (req, res, next) => {
     }
 };
 
-// Fungsi untuk membersihkan token kedaluwarsa
+export const resetPassword = async (req, res, next) => {
+    try {
+        const { namauser, new_password, confirm_password } = req.body;
+
+        if (!namauser || !new_password || !confirm_password) {
+            return next(
+                new AppError(
+                    "Field namauser, new_password, confirm_password dibutuhkan.",
+                    400,
+                    "MISSING_PARAMETERS"
+                )
+            );
+        }
+
+        const user = await Users.findOne({
+            where: { namauser: namauser },
+            attributes: ['password']
+        });
+
+        if (!user) {
+            return next(
+                new AppError(
+                    "User tidak ditemukan.",
+                    404,
+                    "USER_NOT_FOUND"
+                )
+            );
+        }
+
+        if (new_password !== confirm_password) {
+            return next(
+                new AppError(
+                    "Password baru tidak cocok dengan password konfirmasi",
+                    400,
+                    "PASSWORD_MISMATCH"
+                )
+            );
+        }
+
+        // Validate password complexity
+        if (!passwordValidation(new_password)) {
+            return next(
+                new AppError(
+                    "Password harus memenuhi kriteria berikut: minimal 8 karakter, mengandung huruf kecil, huruf kapital, angka, dan simbol (!@#$%^&*).",
+                    400,
+                    "INVALID_PASSWORD_FORMAT"
+                )
+            );
+        }
+
+        const hashNewPassword = crypto.createHash('md5').update(new_password).digest('hex');
+
+        // Check if new password is the same as the current password
+        if (hashNewPassword === user.password) {
+            return next(
+                new AppError(
+                    "Password baru tidak boleh sama dengan password saat ini",
+                    400,
+                    "PASSWORD_SAME_AS_CURRENT"
+                )
+            );
+        }
+
+        const update = await Users.update(
+            {
+                password: hashNewPassword,
+                password_changed_at: new Date()
+            },
+            { where: { namauser: namauser } }
+        );
+
+        return res.success(update, 'Berhasil mereset password');
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const cleanupExpiredTokens = async () => {
     try {
         const now = new Date();
@@ -201,8 +292,22 @@ export const cleanupExpiredTokens = async () => {
                 expires_at: { [Op.lt]: now }
             }
         });
-        console.log('Expired tokens cleaned up');
     } catch (error) {
-        console.error('Error cleaning up expired tokens:', error);
+        next(error)
     }
 };
+
+export const createLogUserLogin = async (req, res, next) => {
+    try {
+        const { namauser } = req.body;
+
+        const log = await UserLog.create({
+            namauser: namauser,
+            action: "l"
+        });
+
+        res.created(log, "Berhasil membuat log login");
+    } catch (error) {
+        next(error)
+    }
+}

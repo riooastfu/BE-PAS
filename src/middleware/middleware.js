@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/errorHandler.js";
 import RefreshToken from "../model/RefreshToken.js";
+import Users from "../model/Users.js";
 
 export const verifyToken = async (req, res, next) => {
   try {
@@ -12,7 +13,7 @@ export const verifyToken = async (req, res, next) => {
       );
     }
 
-    const token = authHeader.split(" ")[1]; // Format: "Bearer TOKEN"
+    const token = authHeader.split(" ")[1];
 
     // Verifikasi token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -118,4 +119,55 @@ export const checkRole = (allowedRoles) => {
       );
     }
   };
+};
+
+export const checkPasswordExpiration = async (req, res, next) => {
+  try {
+    // Skip check for login, refresh token, and password reset routes
+    if (
+      req.path.includes('/auth/login') ||
+      req.path.includes('/auth/refresh-token') ||
+      req.path.includes('/users/reset')
+    ) {
+      return next();
+    }
+
+    // Get user details from the token payload
+    const { namauser } = req.user;
+
+    // Find the user in the database to check their password_changed_at field
+    const user = await Users.findOne({
+      where: { namauser },
+      attributes: ['password_changed_at']
+    });
+
+    if (!user) {
+      return next(
+        new AppError(
+          "User tidak ditemukan.",
+          401,
+          "USER_NOT_FOUND"
+        )
+      );
+    }
+
+    // Calculate the date 3 months ago
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    // Check if password has never been changed or was changed more than 3 months ago
+    if (!user.password_changed_at || new Date(user.password_changed_at) < threeMonthsAgo) {
+      return next(
+        new AppError(
+          "Password Anda telah kedaluwarsa. Mohon perbarui password Anda.",
+          403,
+          "PASSWORD_EXPIRED"
+        )
+      );
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 };

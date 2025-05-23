@@ -14,21 +14,18 @@ const PersCutiKaryawan = db.define(
     periode: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      // Mungkin merupakan bagian dari composite key dengan NIK di dunia nyata
-      // primaryKey: true // Tambahkan jika ini bagian dari composite key
     },
     nik: {
-      type: DataTypes.INTEGER.UNSIGNED, // Menangani atribut UNSIGNED
-      allowNull: false, // 'Tak Ternilai' = Tidak
-      defaultValue: 0, // Berdasarkan kolom 'Bawaan' (0000000000)
-      // primaryKey: true // Tambahkan jika ini bagian dari composite key
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
     },
     tanggal_berlaku: {
-      type: DataTypes.DATEONLY, // Hanya tanggal
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     tanggal_berakhir: {
-      type: DataTypes.DATEONLY, // Hanya tanggal
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     hak_cuti: {
@@ -44,11 +41,9 @@ const PersCutiKaryawan = db.define(
       allowNull: false,
     },
     aktif: {
-      type: DataTypes.BOOLEAN, // tinyint(1) sering dipetakan ke BOOLEAN
-      allowNull: false, // 'Tak Ternilai' = Tidak
-      defaultValue: false, // Berdasarkan kolom 'Bawaan' (0), dan asumsi 0 = false/tidak aktif
-      // Komentar '0 aktif 1 non' mungkin perlu diklarifikasi,
-      // jika 0 berarti aktif, ubah defaultValue jadi true.
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

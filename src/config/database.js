@@ -5,6 +5,8 @@ export const db = new Sequelize('portal_prd', 'root', '', {
     host: "localhost",
     dialect: "mysql",
     dialectOptions: {
+        useUTC: false,
+        dateStrings: true,
         typeCast: function (field, next) { // for reading from database
             if (field.type === 'DATETIME') {
                 return field.string()

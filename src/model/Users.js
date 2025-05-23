@@ -61,19 +61,6 @@ const Users = db.define(
       defaultValue: "-",
     },
 
-    // Timestamps
-    // created_at: {
-    //     type: DataTypes.DATE,
-    //     allowNull: true,
-    //     defaultValue: "0000-00-00 00:00:00"
-    // },
-    // updated_at: {
-    //     type: DataTypes.DATE,
-    //     allowNull: true,
-    //     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-    // },
-
-    // Auditing
     created_by: {
       type: DataTypes.STRING(30),
       collate: "latin1_swedish_ci",
@@ -81,7 +68,11 @@ const Users = db.define(
       defaultValue: "-",
     },
 
-    // Role information
+    password_changed_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+
     id_role: {
       type: DataTypes.INTEGER(11),
       allowNull: true,

@@ -11,9 +11,6 @@ export const cutiUserSchema = z
       required_error: "Tanggal berakhir dibutuhkan",
       invalid_type_error: "Format tanggal berakhir tidak valid.",
     }),
-    total_hari: z
-      .number({ required_error: "Total hari dibutuhkan" })
-      .min(1, "Total hari minimal 1"),
     tipe_cuti: z
       .string({ required_error: "Tipe cuti dibutuhkan" })
       .min(1, "Tipe cuti tidak boleh kosong"),
@@ -23,15 +20,8 @@ export const cutiUserSchema = z
     alamat_cuti: z
       .string({ required_error: "Alamat cuti dibutuhkan" })
       .min(1, "Alamat cuti tidak boleh kosong"),
-    approval: z
-      .number({ required_error: "Approval dibutuhkan" })
-      .min(1, "Approval tidak boleh kosong"),
-    pic: z
-      .string({ required_error: "PIC dibutuhkan" })
-      .min(1, "PIC tidak boleh kosong"),
-    atasan: z
-      .string({ required_error: "Atasan dibutuhkan" })
-      .min(1, "Atasan tidak boleh kosong"),
+    pic: z.number({ required_error: 'PIC dibutuhkan', invalid_type_error: 'PIC harus berupa angka' }).int('PIC harus berupa angka bulat').positive('PIC harus lebih besar dari 0'),
+    atasan: z.number({ required_error: 'Atasan dibutuhkan', invalid_type_error: 'Atasan harus berupa angka' }).int('Atasan harus berupa angka bulat').positive('Atasan harus lebih besar dari 0'),
     no_telepon: z.string().optional(),
   })
   .strict();

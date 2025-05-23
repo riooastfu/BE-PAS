@@ -15,7 +15,7 @@ export const getLaporanHarianById = async (req, res, next) => {
                 new AppError(
                     "Parameter id_laporan dibutuhkan.",
                     400,
-                    "ID_LAPORAN_REQUIRED"
+                    "MISSING_PARAMETER"
                 )
             );
         }
@@ -53,7 +53,7 @@ export const getLaporanKesehatanByNik = async (req, res, next) => {
                 new AppError(
                     "Parameter NIK dibutuhkan di URL.",
                     400,
-                    "NIK_PARAM_REQUIRED"
+                    "MISSING_PARAMETER"
                 )
             );
         }
@@ -91,7 +91,7 @@ export const getLaporanKesehatanById = async (req, res, next) => {
                 new AppError(
                     "Parameter id_laporan dibutuhkan di URL.",
                     400,
-                    "ID_LAPORAN_PARAM_REQUIRED"
+                    "MISSING_PARAMETER"
                 )
             );
         }
@@ -168,6 +168,7 @@ export const createLaporanHarian = async (req, res, next) => {
             );
         }
 
+
         const validatedData = validationResult.data;
         const { id_laporan } = validatedData;
 
@@ -242,9 +243,12 @@ export const createLaporanKesehatan = async (req, res, next) => {
         const validatedData = validationResult.data;
         const { nik, tanggal } = validatedData;
 
+        //make nik 10digits
+        const paddedNik1 = nik.toString().padStart(10, '0');
+
         const dataToCreate = {
             ...validatedData,
-            id_laporan: nik + "_" + tanggal,
+            id_laporan: paddedNik1 + "_" + tanggal,
         };
 
         const laporan = await PersDataLaporanKesehatan.create(dataToCreate);
@@ -254,7 +258,7 @@ export const createLaporanKesehatan = async (req, res, next) => {
         if (error.name === "SequelizeUniqueConstraintError") {
             return next(
                 new AppError(
-                    "Gagal menambahkan data: Laporan untuk ID/NIK/Tanggal tersebut mungkin sudah ada.",
+                    "Laporan untuk Tanggal tersebut mungkin sudah ada.",
                     409,
                     "DUPLICATE_LAPKES",
                     error.errors
@@ -324,7 +328,7 @@ export const deleteLaporanHarianById = async (req, res, next) => {
                 new AppError(
                     "Parameter id_laporan dibutuhkan di URL.",
                     400,
-                    "ID_LAPORAN_PARAM_REQUIRED"
+                    "MISSING_PARAMETER"
                 )
             );
         }
@@ -353,7 +357,7 @@ export const deleteLaporanKesehatanById = async (req, res, next) => {
                 new AppError(
                     "Parameter id_laporan dibutuhkan di URL.",
                     400,
-                    "ID_LAPORAN_PARAM_REQUIRED"
+                    "MISSING_PARAMETER"
                 )
             );
         }
